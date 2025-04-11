@@ -1,3 +1,0 @@
-# EZLIBRARY
-
-It does something, but not right now...
