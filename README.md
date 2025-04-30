@@ -38,7 +38,7 @@ EZLIBRARY/
 2. Install required dependencies:
 
    ```bash
-   pip install flask
+   pip install -r requirements.txt
    ```
 
 <!-- 3. Set up the database (MySQL) and configure the connection in `bookworms.py`. -->
