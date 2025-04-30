@@ -58,8 +58,8 @@ Access the application at `http://localhost:5000`
 - [x] Basic project structure
 - [x] Initial Flask setup
 - [x] Basic frontend template
-- [ ] Database implementation
-- [ ] User authentication
+- [x] Database implementation
+- [x] User authentication
 - [ ] Book management features
 - [ ] Room reservation system
 - [ ] Equipment checkout system
