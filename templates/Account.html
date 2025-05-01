@@ -1,0 +1,25 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Directory</title>
+  <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+
+<body>
+    <h1>BOOKWORMS LOGO</h1>
+    <div class="nav-group">
+      <button><a href="{{url_for("home")}}">Home</a></button>
+      <button>Inventory</button>
+      <button>Reservations</button>
+      <button>About</button>
+      <button>Cart</button>
+      <button><a href="{{url_for("logout")}}">Logout</a></button>
+    </div> 
+    <div class="content">
+        CONTENT1
+    </div>
+</body>
+
+</html>
