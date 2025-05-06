@@ -35,7 +35,7 @@ def home():
     return render_template('/Home.html')
 
 @app.route("/about")
-def home():
+def about():
     return render_template('/About.html')
 
 @app.route('/login',methods=["GET", "POST"])
