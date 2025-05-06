@@ -11,9 +11,9 @@ from datetime import datetime
 manager=LoginManager()
 app = Flask(__name__)
 manager.init_app(app)
-app.config['MYSQL_DATABASE_HOST'] = 'bookworms-flask.c9e4q2aoy2op.us-east-2.rds.amazonaws.com' # Specify Endpoint
+app.config['MYSQL_DATABASE_HOST'] = "bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com" # Specify Endpoint
 app.config['MYSQL_DATABASE_USER'] = 'admin' # Specify Master username
-app.config['MYSQL_DATABASE_PASSWORD'] = 'administrator' # Specify Master password
+app.config['MYSQL_DATABASE_PASSWORD'] = 'hE079T=DaPa_' # Specify Master password
 app.config['MYSQL_DATABASE_DB'] = 'bookworms-flask' # Specify database name
 app.config['SECRET_KEY'] = os.urandom(64)                                                                                                                      
 @manager.user_loader
@@ -137,9 +137,9 @@ def generate_user(email,role,user_id):
     return user(email,role,user_id)
 
 def generate_connection():
-    connection=pymysql.connect(host='bookworms-flask.c9e4q2aoy2op.us-east-2.rds.amazonaws.com',
+    connection=pymysql.connect(host="bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com",
                              user='admin',
-                             password='administrator',
+                             password='hE079T=DaPa_',
                              database='bookworms',
                              cursorclass=pymysql.cursors.DictCursor)
     return connection
