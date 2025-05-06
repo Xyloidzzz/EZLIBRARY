@@ -119,6 +119,10 @@ def registration():
 def account():
     return render_template('/Account.html');
 
+@app.route("/search")
+def search():
+    return render_template('/Search.html')
+
 class user():
     def __init__(self,email,user_id,role):
         self.email=email
