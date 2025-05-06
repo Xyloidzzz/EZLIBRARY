@@ -1,0 +1,98 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Directory</title>
+  <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+
+<body>
+    <h1>BOOKWORMS LOGO</h1>
+    <div class="nav-group">
+      <button>Users</button>
+      <button>Inventory</button>
+      <button>Reservations</button>
+      <button>Layout</button>
+      <button>Fines</button>
+      <button>About</button>
+      <button><a href="{{url_for("logout")}}">Logout</a></button>
+    </div> 
+    <div class="content">
+        Search Parameters
+        {% if status=='Inventory' %}
+        <form>
+            <form name='isearch' method='post' action="{{ url_for("isearch")}}">
+                <label for="title"><b>Title</b></label>
+                <input type="text" placeholder="Enter Title" name="title">
+                <label for="author"><b>Author</b></label>
+                <input type="text" placeholder="Enter Author" name="author">
+                <label for="isbn"><b>ISBN</b></label>
+                <input type="text" placeholder="Enter ISBN" name="isbn">
+            <button type="submit">Search</button>
+            <table name='inventory'>
+                <tr>
+                    <td>Title</td>
+                    <td>Author</td>
+                    <td>ISBN</td>
+                    <td>Location</td>
+                    <td>Status</td>
+                </tr>
+            </table>
+        </form>
+        {% endif %}
+        {% if status=='Users' %}
+        <form name='usearch' method='post' action="{{ url_for("usearch")}}">
+                <label for="email"><b>Email</b></label>
+                <input type="text" placeholder="Enter Email" name="email">
+                <label for="fname"><b>First Name</b></label>
+                <input type="text" placeholder="Enter First Name" name="fname">
+                <label for="lname"><b>Last Name</b></label>
+                <input type="text" placeholder="Enter Last Name" name="lname">
+                <label for="role"><b>Role</b></label>
+                <select name='role'>
+                    <option value="both">Both</option>
+                    <option value="users">Users</option>
+                    <option value="staff">Staff</option>
+                </select>
+            <button type="submit">Search</button>
+            <table name='users'>
+                <tr>
+                    <td>Email</td>
+                    <td>First Name</td>
+                    <td>Last Name</td>
+                    <td>Role</td>
+                    <td>Created</td>
+                </tr>
+            </table>
+        </form>
+        {% endif %}
+        {% if status=='Reservation' %}
+        <form>
+            <input name='title'>Basic</input>
+        </form>
+        {% endif %}
+        {% if status=="Checkouts" %}
+        <form>
+            <input name='title'>Basic</input>
+        </form>
+        {% endif %} 
+        {% if status=="Borrows" %}
+        <form>
+            <input name='title'>Basic</input>
+        </form>
+        {% endif %}
+        {% if status=='Layout' %}
+        <form>
+            <input name='title'>Basic</input>
+        </form>
+        {% endif %}
+        {% if status=='Fines' %}
+        <form>
+            <input name='title'>Basic</input>
+        </form>
+        {% endif %}
+    </div>
+</body>
+
+</html>

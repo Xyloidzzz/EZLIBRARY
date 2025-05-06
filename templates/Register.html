@@ -1,0 +1,36 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bookworms</title>
+  <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+
+<body>
+    <h1>BOOKWORMS LOGO</h1>
+    <div class="nav-group">
+      <button><a href="{{url_for("home")}}">Home</a></button>
+      <button>Inventory</button>
+      <button>About</button>
+    </div> 
+    <div class="content">
+        <form name='registration' method='post' action="{{ url_for("registration")}}">
+            <label for="fname"><b>First Name</b></label>
+            <input type="text" placeholder="Enter First Name" name="fname" required value={{fname}}>
+            <label for="lname"><b>Last Name</b></label>
+            <input type="text" placeholder="Enter Last Name" name="lname" required value={{lname}}>
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" required value={{email}}>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required value={{password}}>
+            <label for="repsw"><b>Reconfirm Password</b></label>
+            <input type="password" placeholder="Reconfirm Password" name="repsw" required>
+            
+            <button type="submit">Register</button>
+        </form>
+        <a href="{{url_for("login")}}" name='register'> Already have an account? </a>
+    </div>
+</body>
+
+</html>
