@@ -18,19 +18,6 @@ EZLIBRARY (Bookworms) is a comprehensive library management system built with Fl
 - **Frontend**: HTML/CSS
 - **Database**: MySQL and AWS
 
-## Project Structure
-
-```
-EZLIBRARY/
-├── static/
-│   └── styles/
-│       └── styles.css
-├── templates/
-│   └── Home.html
-├── bookworms.py
-└── README.md
-```
-
 ## Setup and Installation
 
 1. Clone the repository
