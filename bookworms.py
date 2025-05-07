@@ -23,6 +23,7 @@ def load_user(user_id):
             with connection.cursor() as cursor:
                 cursor.execute(''' select role,email,user_id from users where user_id=%s ''' , (user_id))
                 data=cursor.fetchone()
+                cursor.close()
                 if data is None:
                     return None
                 else:
@@ -53,6 +54,7 @@ def auth():
                 with connection.cursor() as cursor:
                     cursor.execute(''' select pass_hash, role,email,user_id from users where email="%s" ''' % (email))
                     data=cursor.fetchone()
+                    cursor.close()
                     try:
                         print(type(data['pass_hash']))
                         scrypt.decrypt(data['pass_hash'], psw, 10)
@@ -106,9 +108,11 @@ def registration():
                         connection.commit()
                         cursor.execute('''select user_id from users where email="%s"''',(email))
                         user_id=cursor.fetchone()
+                        cursor.close()
                         login_user(generate_user(email,'user',user_id))
                         return render_template('/Account.html',data=(email,fname,lname))
                     else:
+                        cursor.close()
                         return render_template('/Register.html',error="Email already in use, please use another.")
         else:
             render_template('/Register.html',error="Error found in password or email, please try again.")
@@ -131,6 +135,7 @@ def books():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM books")
                 data = cur.fetchall()
+                cur.close()
                 if data is None:
                     return render_template('Books.html', error="nothing there...")
                 return render_template('/Books.html', data=data)
@@ -145,6 +150,7 @@ def equipment():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM equipment")
                 data = cur.fetchall()
+                cur.close()
                 if data is None:
                     return render_template('/Equipment.html', error="nothing there...")
                 return render_template('/Equipment.html', data=data)
