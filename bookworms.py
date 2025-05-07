@@ -123,6 +123,20 @@ def account():
 def search():
     return render_template('/Search.html')
 
+@app.route("/books", methods=['GET'])
+def books():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM books")
+                data = cur.fetchall()
+                if data is None:
+                    return render_template('Books.html', error="nothing there...")
+                return render_template('/Books.html', data=data)
+    else:
+        redirect('/directory')
+
 class user():
     def __init__(self,email,user_id,role):
         self.email=email
