@@ -137,6 +137,20 @@ def books():
     else:
         redirect('/directory')
 
+@app.route("/equipment", methods=['GET'])
+def equipment():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM equipment")
+                data = cur.fetchall()
+                if data is None:
+                    return render_template('/Equipment.html', error="nothing there...")
+                return render_template('/Equipment.html', data=data)
+    else:
+        redirect('/directory')
+
 class user():
     def __init__(self,email,user_id,role):
         self.email=email
