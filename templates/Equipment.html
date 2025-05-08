@@ -15,6 +15,7 @@
             <a href="{{url_for("users")}}"><button>Users</button></a>
             <a href="{{url_for("staff")}}"><button>Staff</button></a>
             <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
             <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
             <button>Reservations</button>
             <button>Layout</button>
@@ -25,6 +26,7 @@
         {% if current_user.role=="user" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
             <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
             <button>Reservations</button>
             <button>Layout</button>

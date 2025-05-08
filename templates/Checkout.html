@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Directory</title>
+  <title>Checkout</title>
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 
@@ -39,12 +39,8 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>ISBN</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Added</th>
+                    <th>Checkout Date</th>
+                    <th>Due Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,16 +49,11 @@
                     Hi {{ current_user.name }}!
                 {% endif %}
                 </h1>
-                
                 {% for item in data %}
                 <tr>
                     <td>{{item['book_id']}}</td>
-                    <td>{{item['title']}}</td>
-                    <td>{{item['author']}}</td>
-                    <td>{{item['ISBN']}}</td>
-                    <td>{{item['location']}}</td>
-                    <td>{{item['status']}}</td>
-                    <td>{{item['added']}}</td>
+                    <td>{{item['checkout_date']}}</td>
+                    <td>{{item['due_date']}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
