@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Directory</title>
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
-  {% comment %} <script src="{{ url_for('static',filename='scripts/tables.js') }}"></script> {% endcomment %}
 </head>
 
 <body>
@@ -60,7 +59,7 @@
                 </h1>
                 
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['book_id']}}">
                     <td>{{item['book_id']}}</td>
                     <td>{{item['title']}}</td>
                     <td>{{item['author']}}</td>
@@ -73,6 +72,7 @@
             </tbody>
         </table>
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>
