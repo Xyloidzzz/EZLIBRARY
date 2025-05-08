@@ -22,7 +22,30 @@
       <a href="{{url_for("logout")}}"><button>Logout</button></a>
     </div> 
     <div class="content">
-        CONTENT1
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Role</th>
+                    <th>Added</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{item['user_id']}}</td>
+                    <td>{{item['email']}}</td>
+                    <td>{{item['first_name']}}</td>
+                    <td>{{item['last_name']}}</td>
+                    <td>{{item['role']}}</td>
+                    <td>{{item['created_at']}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 

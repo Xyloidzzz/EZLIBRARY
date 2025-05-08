@@ -10,14 +10,16 @@
 <body>
     <h1>BOOKWORMS LOGO</h1>
     <div class="nav-group">
-        <a href="{{url_for("home")}}"><button>Home</button></a>
-        <a href="{{url_for("about")}}"><button>About</button></a>
-        <button>Users</button>
-        <button>Inventory</button>
-        <button>Reservations</button>
-        <button>Layout</button>
-        <button>Fines</button>
-        <a href="{{url_for("logout")}}"><button>Logout</button></a>
+      <a href="{{url_for("home")}}"><button>Home</button></a>
+      <a href="{{url_for("users")}}"><button>Users</button></a>
+      <a href="{{url_for("staff")}}"><button>Staff</button></a>
+      <a href="{{url_for("books")}}"><button>Books</button></a>
+      <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+      <button>Reservations</button>
+      <button>Layout</button>
+      <button>Fines</button>
+      <a href="{{url_for("about")}}"><button>About</button></a>
+      <a href="{{url_for("logout")}}"><button>Logout</button></a>
     </div> 
     <div class="content">
         Search Parameters

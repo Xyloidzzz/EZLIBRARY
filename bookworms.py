@@ -142,6 +142,38 @@ def books():
     else:
         redirect('/directory')
 
+@app.route("/users", methods=['GET'])
+def users():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM users WHERE role = 'user'")
+                data = cur.fetchall()
+                print(data)
+                cur.close()
+                if data is None:
+                    return render_template('Users.html', error="nothing there...")
+                return render_template('/Users.html', data=data)
+    else:
+        redirect('/directory')
+
+@app.route("/staff", methods=['GET'])
+def staff():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM users WHERE role = 'staff'")
+                data = cur.fetchall()
+                print(data)
+                cur.close()
+                if data is None:
+                    return render_template('Staff.html', error="nothing there...")
+                return render_template('/Staff.html', data=data)
+    else:
+        redirect('/directory')
+
 @app.route("/equipment", methods=['GET'])
 def equipment():
     if request.method == 'GET':
