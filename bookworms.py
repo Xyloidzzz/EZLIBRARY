@@ -261,6 +261,7 @@ def equipment():
     else:
         redirect('/directory')
 
+
 @app.route("/reservation", methods=['GET'])
 def reservation():
     if request.method == 'GET':
@@ -275,6 +276,24 @@ def reservation():
                 return render_template('/Reservation.html', data=data)
     else:
         redirect('/directory')
+
+@app.route("/checkout", methods=['GET'])
+def checkout():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                if (current_user.role=='user'):
+                    cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.get_id()}")
+                    data = cur.fetchall()
+                    cur.close()
+                else:
+                    cur.execute("select * from checkout")
+                    data=cur.fetchall()
+                    cur.close()
+                if data is None:
+                    return render_template('/Checkout.html', error="nothing there...")
+                return render_template('/Checkout.html', data=data, user=current_user)
 
 @app.route("/layout", methods=['GET'])
 def layout():
@@ -291,6 +310,19 @@ def layout():
     else:
         redirect('/directory')
 
+@app.route("/fines", methods=['GET'])
+def fines():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute(f"SELECT * FROM fine")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Fines.html', error="nothing there...")
+                return render_template('/Fines.html', data=data, user=current_user)
+                
 class user():
     def __init__(self,email,role,user_id,name):
         self.email=email
@@ -309,6 +341,9 @@ class user():
 
     def get_id(self):
         return self.id
+
+    def get_role(self):
+        return self.role
         
 def generate_user(email,role,user_id,name):
     return user(email,role,user_id,name)
