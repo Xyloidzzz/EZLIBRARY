@@ -142,6 +142,36 @@ def books():
     else:
         redirect('/directory')
 
+@app.route("/checkout", methods=['GET'])
+def checkout():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('Checkout.html', error="nothing there...")
+                return render_template('/Checkout.html', data=data, user=current_user)
+    else:
+        redirect('/directory')
+
+@app.route("/fines", methods=['GET'])
+def fines():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM fine")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('Fine.html', error="nothing there...")
+                return render_template('/Fine.html', data=data, user=current_user)
+    else:
+        redirect('/directory')
+
 @app.route("/users", methods=['GET'])
 def users():
     if request.method == 'GET':
