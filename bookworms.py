@@ -142,6 +142,79 @@ def books():
     else:
         redirect('/directory')
 
+@app.route("/checkout", methods=['GET'])
+def checkout():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('Checkout.html', error="nothing there...")
+                return render_template('/Checkout.html', data=data, user=current_user, error=False)
+    else:
+        redirect('/directory')
+
+@app.route("/checkout/add", methods=['POST'])
+def checkoutBook():
+    if request.method=='POST':
+        book_id=request.form.get('book_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute(f'SELECT status FROM books WHERE book_id = {book_id}')
+                if (cursor.fetchone()['status'] == 'available'):
+                    cursor.execute(f'UPDATE books SET status = "checked out" WHERE book_id = {book_id}')
+                    con.commit()
+                    cursor.execute('INSERT INTO checkout (user_id, book_id) VALUES (%s, %s)', (current_user.id, book_id))
+                    con.commit()
+                    cursor.close()
+                    return redirect('/checkout')
+                else:
+                    return redirect('/checkout')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+
+@app.route("/fines", methods=['GET'])
+def fines():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM fine")
+                data = cur.fetchall()
+                print(data)
+                cur.close()
+                if data is None:
+                    return render_template('Fines.html', error="nothing there...")
+                return render_template('/Fines.html', data=data, user=current_user)
+    else:
+        redirect('/directory')
+
+@app.route("/fines/add", methods=['POST'])
+def addfine():
+    if request.method=='POST':
+        user_id=request.form.get('user_id')
+        checkout_id=request.form.get('checkout_id')
+        amount=request.form.get('amount')
+        date=datetime.now()
+        date=date.strftime('%Y-%m-%d')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, "Due", %s)', (user_id, checkout_id, amount, date))
+                con.commit()
+                fine_id=cursor.fetchone()
+                cursor.close()
+                generate_fine(fine_id, user_id, checkout_id, amount)
+                return redirect('/fines')
+    else:
+        cursor.close()
+        redirect('/directory') 
+
 @app.route("/users", methods=['GET'])
 def users():
     if request.method == 'GET':
@@ -204,7 +277,6 @@ def reservation():
     else:
         redirect('/directory')
 
-
 @app.route("/checkout", methods=['GET'])
 def checkout():
     if request.method == 'GET':
@@ -222,7 +294,6 @@ def checkout():
                 if data is None:
                     return render_template('/Checkout.html', error="nothing there...")
                 return render_template('/Checkout.html', data=data, user=current_user)
-
 
 @app.route("/layout", methods=['GET'])
 def layout():
@@ -251,14 +322,13 @@ def fines():
                 if data is None:
                     return render_template('/Fines.html', error="nothing there...")
                 return render_template('/Fines.html', data=data, user=current_user)
-
+                
 class user():
     def __init__(self,email,role,user_id,name):
         self.email=email
         self.id=str(user_id)
         self.role=role
         self.name=name
-
 
     def is_active(self):
         return True
@@ -278,6 +348,7 @@ class user():
 def generate_user(email,role,user_id,name):
     return user(email,role,user_id,name)
 
+
 def generate_connection():
     connection=pymysql.connect(host="bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com",
                              user='admin',
@@ -289,3 +360,15 @@ def generate_connection():
 def check_email(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     return re.fullmatch(regex,email)
+
+class fine():
+    def __init__(self, fine_id, user_id, checkout_id, amount):
+        self.fine_id=fine_id
+        self.user_id=str(user_id)
+        self.checkout_id=checkout_id
+        self.amount=amount
+        self.status='Due'
+        self.issued_at=datetime.now()
+
+def generate_fine(fine_id, user_id, checkout_id, amount):
+    return fine(fine_id, user_id, checkout_id, amount)

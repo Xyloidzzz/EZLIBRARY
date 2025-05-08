@@ -48,6 +48,20 @@
                 </h1>
         {% endif %}
         {% if current_user.role == 'staff' %}
+        <div class="staff-form">
+            <form name='Fine ID' method='post' action="{{ url_for("addfine")}}">
+                <label for="user_id"><b>User ID</b></label>
+                <input type="text" placeholder="Enter User ID" name="user_id" required>
+            
+                <label for="checkout_id"><b>Checkout ID</b></label>
+                <input type="checkout_id" placeholder="Checkout ID" name="checkout_id" required>
+
+                <label for="amount"><b>Amount</b></label>
+                <input type="amount" placeholder="Amount" name="amount" required>
+            
+                <button type="submit">submit/button>
+            </form>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -62,19 +76,20 @@
             
             <tbody>
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['fine_id']}}">
                     <td>{{item['fine_id']}}</td>
                     <td>{{item['user_id']}}</td>
                     <td>{{item['checkout_id']}}</td>
                     <td>{{item['amount']}}</td>
                     <td>{{item['status']}}</td>
-                    <td>{{item['issued_at']}}</td>
+                    <td>{{item['issued']}}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         {% endif %}
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>

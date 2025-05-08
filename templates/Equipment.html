@@ -47,7 +47,7 @@
             </thead>
             <tbody>
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['book_id']}}">
                     <td>{{item['equipment_id']}}</td>
                     <td>{{item['equipment_name']}}</td>
                     <td>{{item['status']}}</td>
@@ -58,6 +58,7 @@
             </tbody>
         </table>
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>

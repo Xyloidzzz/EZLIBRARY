@@ -53,9 +53,16 @@
                     Hi {{ current_user.name }}!
                 {% endif %}
                 </h1>
+
+                {% if current_user.role == 'staff' %}
+                <div class="table-buttons">
+                    <button id="table-edit-button">Edit</button>
+                    <button id="table-add-button">Add</button>
+                </div>
+                {% endif %}
                 
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['book_id']}}">
                     <td>{{item['book_id']}}</td>
                     <td>{{item['title']}}</td>
                     <td>{{item['author']}}</td>
@@ -68,6 +75,7 @@
             </tbody>
         </table>
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>
