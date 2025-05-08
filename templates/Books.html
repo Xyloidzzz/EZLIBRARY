@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Directory</title>
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+  {% comment %} <script src="{{ url_for('static',filename='scripts/tables.js') }}"></script> {% endcomment %}
 </head>
 
 <body>
@@ -33,6 +34,10 @@
         {% endif %}
     </div> 
     <div class="content">
+        <div class="content-buttons">
+            <button class="table-edit-button">Edit</button>
+            <button class="table-add-button">Add</button>
+        </div>
         <table>
             <thead>
                 <tr>
