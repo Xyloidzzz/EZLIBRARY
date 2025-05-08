@@ -33,7 +33,7 @@
             </thead>
             <tbody>
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['reservation_id']}}">
                     <td>{{item['user_id']}}</td>
                     <td>{{item['room_id']}}</td>
                     <td>{{item['start_time']}}</td>
@@ -43,6 +43,7 @@
             </tbody>
         </table>
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>

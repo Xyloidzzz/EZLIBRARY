@@ -61,7 +61,7 @@
             
             <tbody>
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['user_id']}}">
                     <td>{{item['user_id']}}</td>
                     <td>{{item['email']}}</td>
                     <td>{{item['first_name']}}</td>
@@ -74,6 +74,7 @@
         </table>
         {% endif %}
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>
