@@ -211,9 +211,14 @@ def checkout():
         con = generate_connection()
         with con:
             with con.cursor() as cur:
-                cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
-                data = cur.fetchall()
-                cur.close()
+                if (current_user.role=='user'):
+                    cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.get_id()}")
+                    data = cur.fetchall()
+                    cur.close()
+                else:
+                    cur.execute("select * from checkout")
+                    data=cur.fetchall()
+                    cur.close()
                 if data is None:
                     return render_template('/Checkout.html', error="nothing there...")
                 return render_template('/Checkout.html', data=data, user=current_user)
@@ -266,6 +271,9 @@ class user():
 
     def get_id(self):
         return self.id
+
+    def get_role(self):
+        return self.role
         
 def generate_user(email,role,user_id,name):
     return user(email,role,user_id,name)
