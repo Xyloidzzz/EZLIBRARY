@@ -8,13 +8,15 @@
 </head>
 
 <body>
-    <h1>BOOKWORMS LOGO</h1>
+    <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
     <div class="nav-group">
   {% if current_user.role=="staff" %}
       <a href="{{url_for("home")}}"><button>Home</button></a>
       <a href="{{url_for("users")}}"><button>Users</button></a>
       <a href="{{url_for("staff")}}"><button>Staff</button></a>
       <a href="{{url_for("books")}}"><button>Books</button></a>
+        
+      <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
       <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
       <a href="{{url_for("reservation")}}"><button>Reservations</button>
       <a href="{{url_for("layout")}}"><button>Layout</button>
@@ -36,7 +38,7 @@
   {% endif %}
     </div> 
     <div class="content">
-        Welcome to the Bookworms 
+        Welcome to the Bookworms page directory.  We're a dedicated group working to bringing your online library directory into a functioning reality.  We offer a flexible capability to generate and operate within your data to efficiently present your users and administrative staff their required information.
     </div>
 </body>
 

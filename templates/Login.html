@@ -8,10 +8,11 @@
 </head>
 
 <body>
-    <h1>BOOKWORMS LOGO</h1>
+    <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
     <div class="nav-group">
       <a href="{{url_for("home")}}"><button>Home</button></a>
       <a href="{{url_for("about")}}"><button>About</button></a>
+      <a href="{{url_for("login")}}"><button>Login</button></a>
     </div> 
     <div class="content">
         <form name='login' method='post' action="{{ url_for("auth")}}">

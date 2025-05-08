@@ -8,14 +8,14 @@
 </head>
 
 <body>
-    <h1>BOOKWORMS LOGO</h1>
+    <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
     <div class="nav-group">
       <a href="{{url_for("home")}}"><button>Home</button></a>
       <a href="{{url_for("about")}}"><button>About</button></a>
       <a href="{{url_for("login")}}"><button>Login</button></a>
     </div> 
     <div class="content">
-        CONTENT1
+        This is the home page of the bookworms! Please head over to the login page to proceed into our system or register a new account, or head to the about page to learn about us.
     </div>
 </body>
 

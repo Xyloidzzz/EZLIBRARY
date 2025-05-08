@@ -15,7 +15,8 @@
 </head>
 
 <body>
-    <h1>BOOKWORMS LOGO</h1>
+    <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
+    <div class="nav-group">
     {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>

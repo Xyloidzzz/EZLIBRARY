@@ -126,3 +126,8 @@ a:hover {
   font-weight: bold;
   color: #009879;
 }
+
+.logo {
+    height:100;
+    width:80;
+}
