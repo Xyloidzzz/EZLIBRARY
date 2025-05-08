@@ -10,16 +10,27 @@
 <body>
     <h1>BOOKWORMS LOGO</h1>
     <div class="nav-group">
-        <a href="{{url_for("home")}}"><button>Home</button></a>
-        <a href="{{url_for("users")}}"><button>Users</button></a>
-        <a href="{{url_for("staff")}}"><button>Staff</button></a>
-        <a href="{{url_for("books")}}"><button>Books</button></a>
-        <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-        <button>Reservations</button>
-        <button>Layout</button>
-        <button>Fines</button>
-        <a href="{{url_for("about")}}"><button>About</button></a>
-        <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% if current_user.role=="staff" %}
+            <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("users")}}"><button>Users</button></a>
+            <a href="{{url_for("staff")}}"><button>Staff</button></a>
+            <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+            <button>Reservations</button>
+            <button>Layout</button>
+            <button>Fines</button>
+            <a href="{{url_for("about")}}"><button>About</button></a>
+            <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% endif %}
+        {% if current_user.role=="user" %}
+            <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+            <button>Reservations</button>
+            <button>Layout</button>
+            <a href="{{url_for("about")}}"><button>About</button></a>
+            <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% endif %}
     </div> 
     <div class="content">
         <table>
@@ -35,13 +46,19 @@
                 </tr>
             </thead>
             <tbody>
+                <h1>
+                {% if current_user.is_authenticated %}
+                    Hi {{ current_user.name }}!
+                {% endif %}
+                </h1>
+                
                 {% for item in data %}
                 <tr>
                     <td>{{item['book_id']}}</td>
                     <td>{{item['title']}}</td>
                     <td>{{item['author']}}</td>
                     <td>{{item['ISBN']}}</td>
-                    <td>{{item['locaiton']}}</td>
+                    <td>{{item['location']}}</td>
                     <td>{{item['status']}}</td>
                     <td>{{item['added']}}</td>
                 </tr>

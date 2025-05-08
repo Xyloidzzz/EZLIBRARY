@@ -21,13 +21,13 @@ def load_user(user_id):
     connection = generate_connection()
     with connection:
             with connection.cursor() as cursor:
-                cursor.execute(''' select role,email,user_id from users where user_id=%s ''' , (user_id))
+                cursor.execute(''' select role,email,user_id,first_name from users where user_id=%s ''' , (user_id))
                 data=cursor.fetchone()
                 cursor.close()
                 if data is None:
                     return None
                 else:
-                    return generate_user(data['email'],data['role'],data['user_id'])
+                    return generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
     return None
 
 @app.route("/")
@@ -52,13 +52,13 @@ def auth():
         if check_email(email):
             with connection:
                 with connection.cursor() as cursor:
-                    cursor.execute(''' select pass_hash, role,email,user_id from users where email="%s" ''' % (email))
+                    cursor.execute(''' select pass_hash, role,email,user_id,first_name from users where email="%s" ''' % (email))
                     data=cursor.fetchone()
                     cursor.close()
                     try:
                         print(type(data['pass_hash']))
                         scrypt.decrypt(data['pass_hash'], psw, 10)
-                        cur_user=generate_user(data['email'],data['user_id'],data['role'])
+                        cur_user=generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
                         login_user(cur_user)
                         if data['role']=='user':
                             return redirect('/account')
@@ -77,7 +77,7 @@ def directory():
 @login_required
 def logout():
     logout_user()
-    return render_template('/Home.html')
+    return redirect('/home')
 
 @app.route('/register')
 def register():
@@ -138,7 +138,7 @@ def books():
                 cur.close()
                 if data is None:
                     return render_template('Books.html', error="nothing there...")
-                return render_template('/Books.html', data=data)
+                return render_template('/Books.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -150,11 +150,10 @@ def users():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM users WHERE role = 'user'")
                 data = cur.fetchall()
-                print(data)
                 cur.close()
                 if data is None:
                     return render_template('Users.html', error="nothing there...")
-                return render_template('/Users.html', data=data)
+                return render_template('/Users.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -170,7 +169,7 @@ def staff():
                 cur.close()
                 if data is None:
                     return render_template('Staff.html', error="nothing there...")
-                return render_template('/Staff.html', data=data)
+                return render_template('/Staff.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -185,15 +184,17 @@ def equipment():
                 cur.close()
                 if data is None:
                     return render_template('/Equipment.html', error="nothing there...")
-                return render_template('/Equipment.html', data=data)
+                return render_template('/Equipment.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
 class user():
-    def __init__(self,email,user_id,role):
+    def __init__(self,email,role,user_id,name):
         self.email=email
         self.id=str(user_id)
         self.role=role
+        self.name=name
+
 
     def is_active(self):
         return True
@@ -207,8 +208,8 @@ class user():
     def get_id(self):
         return self.id
         
-def generate_user(email,role,user_id):
-    return user(email,role,user_id)
+def generate_user(email,role,user_id,name):
+    return user(email,role,user_id,name)
 
 def generate_connection():
     connection=pymysql.connect(host="bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com",

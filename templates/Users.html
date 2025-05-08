@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Directory</title>
+  {% if current_user.role == 'user' %}
+        <title>Go away</title>
+    {% endif %}
+    {% if current_user.role == 'staff' %}
+        <title>Users</title>
+    {% endif %}
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 
@@ -22,6 +27,12 @@
         <a href="{{url_for("logout")}}"><button>Logout</button></a>
     </div> 
     <div class="content">
+        {% if current_user.role == 'user' %}
+                <h1>
+                    You shouldn't be here
+                </h1>
+        {% endif %}
+        {% if current_user.role == 'staff' %}
         <table>
             <thead>
                 <tr>
@@ -46,6 +57,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     </div>
 </body>
 
