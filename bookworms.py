@@ -21,13 +21,13 @@ def load_user(user_id):
     connection = generate_connection()
     with connection:
             with connection.cursor() as cursor:
-                cursor.execute(''' select role,email,user_id from users where user_id=%s ''' , (user_id))
+                cursor.execute(''' select role,email,user_id,first_name from users where user_id=%s ''' , (user_id))
                 data=cursor.fetchone()
                 cursor.close()
                 if data is None:
                     return None
                 else:
-                    return generate_user(data['email'],data['role'],data['user_id'])
+                    return generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
     return None
 
 @app.route("/")
@@ -52,13 +52,13 @@ def auth():
         if check_email(email):
             with connection:
                 with connection.cursor() as cursor:
-                    cursor.execute(''' select pass_hash, role,email,user_id from users where email="%s" ''' % (email))
+                    cursor.execute(''' select pass_hash, role,email,user_id,first_name from users where email="%s" ''' % (email))
                     data=cursor.fetchone()
                     cursor.close()
                     try:
                         print(type(data['pass_hash']))
                         scrypt.decrypt(data['pass_hash'], psw, 10)
-                        cur_user=generate_user(data['email'],data['user_id'],data['role'])
+                        cur_user=generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
                         login_user(cur_user)
                         if data['role']=='user':
                             return redirect('/account')
@@ -77,7 +77,7 @@ def directory():
 @login_required
 def logout():
     logout_user()
-    return render_template('/Home.html')
+    return redirect('/home')
 
 @app.route('/register')
 def register():
@@ -138,7 +138,7 @@ def books():
                 cur.close()
                 if data is None:
                     return render_template('Books.html', error="nothing there...")
-                return render_template('/Books.html', data=data)
+                return render_template('/Books.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -150,11 +150,10 @@ def users():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM users WHERE role = 'user'")
                 data = cur.fetchall()
-                print(data)
                 cur.close()
                 if data is None:
                     return render_template('Users.html', error="nothing there...")
-                return render_template('/Users.html', data=data)
+                return render_template('/Users.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -170,7 +169,7 @@ def staff():
                 cur.close()
                 if data is None:
                     return render_template('Staff.html', error="nothing there...")
-                return render_template('/Staff.html', data=data)
+                return render_template('/Staff.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
@@ -185,16 +184,22 @@ def equipment():
                 cur.close()
                 if data is None:
                     return render_template('/Equipment.html', error="nothing there...")
-                return render_template('/Equipment.html', data=data)
+                return render_template('/Equipment.html', data=data, user=current_user)
     else:
         redirect('/directory')
 
+<<<<<<< HEAD
 @app.route("/reservation", methods=['GET'])
 def reservation():
+=======
+@app.route("/checkout", methods=['GET'])
+def checkout():
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
     if request.method == 'GET':
         con = generate_connection()
         with con:
             with con.cursor() as cur:
+<<<<<<< HEAD
                 cur.execute("SELECT * FROM reservation")
                 data = cur.fetchall()
                 cur.close()
@@ -206,10 +211,22 @@ def reservation():
 
 @app.route("/layout", methods=['GET'])
 def layout():
+=======
+                cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Checkout.html', error="nothing there...")
+                return render_template('/Checkout.html', data=data, user=current_user)
+
+@app.route("/fines", methods=['GET'])
+def fines():
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
     if request.method == 'GET':
         con = generate_connection()
         with con:
             with con.cursor() as cur:
+<<<<<<< HEAD
                 cur.execute("SELECT * FROM rooms")
                 data = cur.fetchall()
                 cur.close()
@@ -218,12 +235,22 @@ def layout():
                 return render_template('/Layout.html', data=data)
     else:
         redirect('/directory')
+=======
+                cur.execute(f"SELECT * FROM fine")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Fines.html', error="nothing there...")
+                return render_template('/Fines.html', data=data, user=current_user)
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
 
 class user():
-    def __init__(self,email,user_id,role):
+    def __init__(self,email,role,user_id,name):
         self.email=email
         self.id=str(user_id)
         self.role=role
+        self.name=name
+
 
     def is_active(self):
         return True
@@ -237,8 +264,8 @@ class user():
     def get_id(self):
         return self.id
         
-def generate_user(email,role,user_id):
-    return user(email,role,user_id)
+def generate_user(email,role,user_id,name):
+    return user(email,role,user_id,name)
 
 def generate_connection():
     connection=pymysql.connect(host="bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com",

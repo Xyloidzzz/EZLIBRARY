@@ -3,20 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% if current_user.role == 'user' %}
-                <title>
-                    You shouldn't be here
-                </title>
-    {% endif %}
-    {% if current_user.role == 'staff' %}
-        <title>Staff</title>
-    {% endif %}
+  <title>Checkout</title>
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
 </head>
 
 <body>
     <h1>BOOKWORMS LOGO</h1>
-    {% if current_user.role=="staff" %}
+    <div class="nav-group">
+        {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>
             <a href="{{url_for("staff")}}"><button>Staff</button></a>
@@ -41,38 +35,29 @@
         {% endif %}
     </div> 
     <div class="content">
-        {% if current_user.role == 'user' %}
-                <h1>
-                    You shouldn't be here
-                </h1>
-        {% endif %}
-        {% if current_user.role == 'staff' %}
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Role</th>
-                    <th>Added</th>
+                    <th>Checkout Date</th>
+                    <th>Due Date</th>
                 </tr>
             </thead>
-            
             <tbody>
+                <h1>
+                {% if current_user.is_authenticated %}
+                    Hi {{ current_user.name }}!
+                {% endif %}
+                </h1>
                 {% for item in data %}
                 <tr>
-                    <td>{{item['user_id']}}</td>
-                    <td>{{item['email']}}</td>
-                    <td>{{item['first_name']}}</td>
-                    <td>{{item['last_name']}}</td>
-                    <td>{{item['role']}}</td>
-                    <td>{{item['created_at']}}</td>
+                    <td>{{item['book_id']}}</td>
+                    <td>{{item['checkout_date']}}</td>
+                    <td>{{item['due_date']}}</td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
-        {% endif %}
     </div>
 </body>
 

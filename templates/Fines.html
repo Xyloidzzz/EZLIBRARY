@@ -16,6 +16,7 @@
 
 <body>
     <h1>BOOKWORMS LOGO</h1>
+    <div class="nav-group">
     {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>
@@ -50,24 +51,24 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Role</th>
-                    <th>Added</th>
+                    <th>Fine ID</th>
+                    <th>User ID</th>
+                    <th>Checkout ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date Issued</th>
                 </tr>
             </thead>
             
             <tbody>
                 {% for item in data %}
                 <tr>
+                    <td>{{item['fine_id']}}</td>
                     <td>{{item['user_id']}}</td>
-                    <td>{{item['email']}}</td>
-                    <td>{{item['first_name']}}</td>
-                    <td>{{item['last_name']}}</td>
-                    <td>{{item['role']}}</td>
-                    <td>{{item['created_at']}}</td>
+                    <td>{{item['checkout_id']}}</td>
+                    <td>{{item['amount']}}</td>
+                    <td>{{item['status']}}</td>
+                    <td>{{item['issued_at']}}</td>
                 </tr>
             {% endfor %}
             </tbody>
