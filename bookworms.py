@@ -213,7 +213,7 @@ def addfine():
                 return redirect('/fines')
     else:
         cursor.close()
-        redirect('/directory') 
+        return redirect('/directory') 
 
 @app.route("/users", methods=['GET'])
 def users():
