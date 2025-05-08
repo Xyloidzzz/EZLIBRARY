@@ -188,12 +188,30 @@ def equipment():
     else:
         redirect('/directory')
 
+<<<<<<< HEAD
+@app.route("/reservation", methods=['GET'])
+def reservation():
+=======
 @app.route("/checkout", methods=['GET'])
 def checkout():
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
     if request.method == 'GET':
         con = generate_connection()
         with con:
             with con.cursor() as cur:
+<<<<<<< HEAD
+                cur.execute("SELECT * FROM reservation")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Reservation.html', error="nothing there...")
+                return render_template('/Reservation.html', data=data)
+    else:
+        redirect('/directory')
+
+@app.route("/layout", methods=['GET'])
+def layout():
+=======
                 cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
                 data = cur.fetchall()
                 cur.close()
@@ -203,22 +221,28 @@ def checkout():
 
 @app.route("/fines", methods=['GET', 'POST'])
 def fines():
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
     if request.method == 'GET':
         con = generate_connection()
         with con:
             with con.cursor() as cur:
+<<<<<<< HEAD
+                cur.execute("SELECT * FROM rooms")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Layout.html', error="nothing there...")
+                return render_template('/Layout.html', data=data)
+    else:
+        redirect('/directory')
+=======
                 cur.execute(f"SELECT * FROM fine")
                 data = cur.fetchall()
                 cur.close()
                 if data is None:
                     return render_template('/Fines.html', error="nothing there...")
                 return render_template('/Fines.html', data=data, user=current_user)
-            
-@app.route("/fines/add", methods=['POST'])
-def add_fine():
-    user_id=request.form.get('user_id')
-    checkout_id=request.form.get('checkout_id')
-    amount = request.form.get('amount')
+>>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
 
 class user():
     def __init__(self,email,role,user_id,name):
