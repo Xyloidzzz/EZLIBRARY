@@ -23,14 +23,17 @@
     </div> 
     <div class="content">
         <table>
-            <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Status</td>
-                <td>Added</td>
-                <td>Description</td>
-            </tr>
-            {% for item in data %}
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Added</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
                 <tr>
                     <td>{{item['equipment_id']}}</td>
                     <td>{{item['equipment_name']}}</td>
@@ -38,7 +41,8 @@
                     <td>{{item['added']}}</td>
                     <td>{{item['description']}}</td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </body>
