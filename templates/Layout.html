@@ -1,0 +1,46 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Directory</title>
+  <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+
+<body>
+    <h1>BOOKWORMS LOGO</h1>
+    <div class="nav-group">
+      <a href="{{url_for("home")}}"><button>Home</button></a>
+      <a href="{{url_for("users")}}"><button>Users</button></a>
+      <a href="{{url_for("staff")}}"><button>Staff</button></a>
+      <a href="{{url_for("books")}}"><button>Books</button></a>
+      <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+      <a href="{{url_for("reservation")}}"><button>Reservations</button></a>
+      <a href="{{url_for("layout")}}"><button>Layout</button></a>
+      <button>Fines</button>
+      <a href="{{url_for("about")}}"><button>About</button></a>
+      <a href="{{url_for("logout")}}"><button>Logout</button></a>
+    </div> 
+    <div class="content">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{item['room_name']}}</td>
+                    <td>{{item['capacity']}}</td>
+                    <td>{{item['location']}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

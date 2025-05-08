@@ -3,26 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Directory</title>
+  <title>Checkout</title>
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
-  {% comment %} <script src="{{ url_for('static',filename='scripts/tables.js') }}"></script> {% endcomment %}
 </head>
 
 <body>
     <h1>BOOKWORMS LOGO</h1>
     <div class="nav-group">
-<<<<<<< HEAD
-      <a href="{{url_for("home")}}"><button>Home</button></a>
-      <a href="{{url_for("users")}}"><button>Users</button></a>
-      <a href="{{url_for("staff")}}"><button>Staff</button></a>
-      <a href="{{url_for("books")}}"><button>Books</button></a>
-      <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-      <a href="{{url_for("reservation")}}"><button>Reservations</button></a>
-      <a href="{{url_for("layout")}}"><button>Layout</button></a>
-      <button>Fines</button>
-      <a href="{{url_for("about")}}"><button>About</button></a>
-      <a href="{{url_for("logout")}}"><button>Logout</button></a>
-=======
         {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>
@@ -46,23 +33,14 @@
             <a href="{{url_for("about")}}"><button>About</button></a>
             <a href="{{url_for("logout")}}"><button>Logout</button></a>
         {% endif %}
->>>>>>> 1b50c0c4bdadf43d3448ac2561e15cca436962be
     </div> 
     <div class="content">
-        <div class="content-buttons">
-            <button class="table-edit-button">Edit</button>
-            <button class="table-add-button">Add</button>
-        </div>
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>ISBN</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Added</th>
+                    <th>Checkout Date</th>
+                    <th>Due Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,16 +49,11 @@
                     Hi {{ current_user.name }}!
                 {% endif %}
                 </h1>
-                
                 {% for item in data %}
                 <tr>
                     <td>{{item['book_id']}}</td>
-                    <td>{{item['title']}}</td>
-                    <td>{{item['author']}}</td>
-                    <td>{{item['ISBN']}}</td>
-                    <td>{{item['location']}}</td>
-                    <td>{{item['status']}}</td>
-                    <td>{{item['added']}}</td>
+                    <td>{{item['checkout_date']}}</td>
+                    <td>{{item['due_date']}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
