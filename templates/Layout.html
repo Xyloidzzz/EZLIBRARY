@@ -25,23 +25,17 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Role</th>
-                    <th>Added</th>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>Location</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in data %}
                 <tr>
-                    <td>{{item['user_id']}}</td>
-                    <td>{{item['email']}}</td>
-                    <td>{{item['first_name']}}</td>
-                    <td>{{item['last_name']}}</td>
-                    <td>{{item['role']}}</td>
-                    <td>{{item['created_at']}}</td>
+                    <td>{{item['room_name']}}</td>
+                    <td>{{item['capacity']}}</td>
+                    <td>{{item['location']}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

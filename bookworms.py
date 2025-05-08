@@ -189,6 +189,36 @@ def equipment():
     else:
         redirect('/directory')
 
+@app.route("/reservation", methods=['GET'])
+def reservation():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM reservation")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Reservation.html', error="nothing there...")
+                return render_template('/Reservation.html', data=data)
+    else:
+        redirect('/directory')
+
+@app.route("/layout", methods=['GET'])
+def layout():
+    if request.method == 'GET':
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute("SELECT * FROM rooms")
+                data = cur.fetchall()
+                cur.close()
+                if data is None:
+                    return render_template('/Layout.html', error="nothing there...")
+                return render_template('/Layout.html', data=data)
+    else:
+        redirect('/directory')
+
 class user():
     def __init__(self,email,user_id,role):
         self.email=email
