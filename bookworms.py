@@ -153,9 +153,30 @@ def checkout():
                 cur.close()
                 if data is None:
                     return render_template('Checkout.html', error="nothing there...")
-                return render_template('/Checkout.html', data=data, user=current_user)
+                return render_template('/Checkout.html', data=data, user=current_user, error=False)
     else:
         redirect('/directory')
+
+@app.route("/checkout/add", methods=['POST'])
+def checkoutBook():
+    if request.method=='POST':
+        book_id=request.form.get('book_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute(f'SELECT status FROM books WHERE book_id = {book_id}')
+                if (cursor.fetchone()['status'] == 'available'):
+                    cursor.execute(f'UPDATE books SET status = "checked out" WHERE book_id = {book_id}')
+                    con.commit()
+                    cursor.execute('INSERT INTO checkout (user_id, book_id) VALUES (%s, %s)', (current_user.id, book_id))
+                    con.commit()
+                    cursor.close()
+                    return redirect('/checkout')
+                else:
+                    return redirect('/checkout')
+    else:
+        cursor.close()
+        return redirect('/directory') 
 
 @app.route("/fines", methods=['GET'])
 def fines():

@@ -35,6 +35,14 @@
         {% endif %}
     </div> 
     <div class="content">
+        <form name='Checkout' method='post' action="{{ url_for("checkoutBook")}}">
+                <label for="book_id"><b>Book ID</b></label>
+                <input type="text" placeholder="Enter Book ID" name="book_id" required>
+                <button> <type="submit"> Submit </button>
+            </form>
+        {% if error %}
+            <p class="error"> Book already out! </p>
+        {% endif %}
         <table>
             <thead>
                 <tr>
