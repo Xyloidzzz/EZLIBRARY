@@ -2,8 +2,13 @@ var trs = document.getElementsByTagName('tr')
 
 for (var i = 0; i < trs.length; i++) {
     trs[i].onclick = (event) => {
-      removeAll('active-row');
-      event.currentTarget.classList.add('active-row');
+      if (!event.currentTarget.classList.contains('active-row')) {
+        removeAll('active-row');
+        event.currentTarget.classList.add('active-row');
+      }
+      else {
+        event.currentTarget.classList.remove('active-row')
+      }
     };
 }
 
