@@ -55,9 +55,29 @@
                 </h1>
 
                 {% if current_user.role == 'staff' %}
-                <div class="table-buttons">
-                    <button id="table-edit-button">Edit</button>
-                    <button id="table-add-button">Add</button>
+                <div class="staff-form">
+                    <form name='book-form' method='post' action="{{ url_for("addbook")}}">
+                        <label for="title"><b>Title</b></label>
+                        <input type="text" placeholder="Enter Title" name="title" required>
+                    
+                        <label for="author"><b>Author</b></label>
+                        <input type="author" placeholder="Enter Author" name="author" required>
+
+                        <label for="ISBN"><b>ISBN</b></label>
+                        <input type="ISBN" placeholder="Enter ISBN" name="ISBN" required>
+
+                        <label for="location"><b>Location</b></label>
+                        <input type="location" placeholder="Enter Location" name="location" required>
+
+                        <label for="status"><b>Status</b></label>
+                        <select type="status" name="status">
+                            <option value="available" default>Available</option>
+                            <option value="lost">Lost</option>
+                            <option value="replace">Replace</option>
+                        </select>
+                    
+                        <button id="staff-form-button" type="submit">Add Book</button>
+                    </form>
                 </div>
                 {% endif %}
                 
@@ -76,6 +96,7 @@
         </table>
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/table_form.js') }}"></script>
 </body>
 
 </html>

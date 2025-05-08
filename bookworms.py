@@ -33,9 +33,12 @@ def load_user(user_id):
 @app.route("/")
 @app.route("/home")
 def home():
-    print(current_user.is_authenticated)
-    if current_user.is_authenticated:
-        redirect('/logout')
+    if type(current_user.is_authenticated)==bool:
+        if current_user.is_authenticated:
+            return redirect('/logout')
+    else:
+        if current_user.is_authenticated():
+            return redirect('/logout')
     return render_template('/Home.html')
 
 @app.route("/about")
@@ -59,7 +62,6 @@ def auth():
                     data=cursor.fetchone()
                     cursor.close()
                     try:
-                        print(type(data['pass_hash']))
                         scrypt.decrypt(data['pass_hash'], psw, 10)
                         cur_user=generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
                         login_user(cur_user)
@@ -102,7 +104,6 @@ def registration():
                     data=cursor.fetchone()
                     if data is None:
                         phash=scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
-                        print(phash)
                         fname=html.escape(fname)
                         lname=html.escape(lname)
                         date=datetime.now()
@@ -146,6 +147,30 @@ def books():
                 return render_template('/Books.html', data=data, user=current_user)
     else:
         redirect('/directory')
+        
+@app.route("/books/add", methods=['POST'])
+def addbook():
+    if request.method=='POST':
+        title=request.form.get('title')
+        author=request.form.get('author')
+        isbn=request.form.get('ISBN')
+        location=request.form.get('location')
+        status=request.form.get('status')
+        added=datetime.now()
+        added=added.strftime('%Y-%m-%d')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute('INSERT INTO books (title, author, isbn, location, status, added) VALUES (%s, %s, %s, %s, %s, %s)', (title, author, isbn, location, status, added))
+                con.commit()
+                book_id=cur.fetchone()
+                cur.close()
+                generate_book(book_id, title, author, isbn, location, status, added)
+                return redirect('/books')
+    else:
+        cur.close()
+        return redirect('/directory') 
+
 
 @app.route("/checkout", methods=['GET'])
 @login_required
@@ -199,7 +224,6 @@ def fines():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM fine")
                 data = cur.fetchall()
-                print(data)
                 cur.close()
                 if data is None:
                     return render_template('Fines.html', error="nothing there...")
@@ -227,7 +251,7 @@ def addfine():
                 return redirect('/fines')
     else:
         cursor.close()
-        redirect('/directory') 
+        return redirect('/directory') 
 
 @app.route("/users", methods=['GET'])
 @login_required
@@ -254,7 +278,6 @@ def staff():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM users WHERE role = 'staff'")
                 data = cur.fetchall()
-                print(data)
                 cur.close()
                 if data is None:
                     return render_template('Staff.html', error="nothing there...")
@@ -358,5 +381,18 @@ class fine():
         self.status='unpaid'
         self.issued_at=datetime.now()
 
+class book():
+    def __init__(self, book_id, title, author, isbn, location, status, added):
+        self.book_id = book_id
+        self.title = title
+        self.author = author
+        self.isbn = isbn
+        self.location = location
+        self.status = status
+        self.added =added
+
 def generate_fine(fine_id, user_id, checkout_id, amount):
     return fine(fine_id, user_id, checkout_id, amount)
+
+def generate_book(book_id, title, author, isbn, location, status, added):
+    return book(book_id, title, author, isbn, location, status, added)
