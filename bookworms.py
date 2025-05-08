@@ -120,6 +120,7 @@ def registration():
         redirect('/register')
         
 @app.route('/account')
+@login_required
 def account():
     return render_template('/Account.html');
 
@@ -128,6 +129,7 @@ def search():
     return render_template('/Search.html')
 
 @app.route("/books", methods=['GET'])
+@login_required
 def books():
     if request.method == 'GET':
         con = generate_connection()
@@ -143,17 +145,18 @@ def books():
         redirect('/directory')
 
 @app.route("/checkout", methods=['GET'])
+@login_required
 def checkout():
     if request.method == 'GET':
         con = generate_connection()
         with con:
             with con.cursor() as cur:
                 if (current_user.role=='user'):
-                    cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.get_id()}")
+                    cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
                     data = cur.fetchall()
                     cur.close()
                 else:
-                    cur.execute(f"SELECT * FROM checkout WHERE user_id = {current_user.id}")
+                    cur.execute(f"SELECT * FROM checkout")
                     data = cur.fetchall()
                     cur.close()
                 if data is None:
@@ -163,6 +166,7 @@ def checkout():
         redirect('/directory')
 
 @app.route("/checkout/add", methods=['POST'])
+@login_required
 def checkoutBook():
     if request.method=='POST':
         book_id=request.form.get('book_id')
@@ -184,6 +188,7 @@ def checkoutBook():
         return redirect('/directory') 
 
 @app.route("/fines", methods=['GET'])
+@login_required
 def fines():
     if request.method == 'GET':
         con = generate_connection()
@@ -200,6 +205,7 @@ def fines():
         redirect('/directory')
 
 @app.route("/fines/add", methods=['POST'])
+@login_required
 def addfine():
     if request.method=='POST':
         user_id=request.form.get('user_id')
@@ -221,6 +227,7 @@ def addfine():
         redirect('/directory') 
 
 @app.route("/users", methods=['GET'])
+@login_required
 def users():
     if request.method == 'GET':
         con = generate_connection()
@@ -236,6 +243,7 @@ def users():
         redirect('/directory')
 
 @app.route("/staff", methods=['GET'])
+@login_required
 def staff():
     if request.method == 'GET':
         con = generate_connection()
@@ -252,6 +260,7 @@ def staff():
         redirect('/directory')
 
 @app.route("/equipment", methods=['GET'])
+@login_required
 def equipment():
     if request.method == 'GET':
         con = generate_connection()
@@ -268,6 +277,7 @@ def equipment():
 
 
 @app.route("/reservation", methods=['GET'])
+@login_required
 def reservation():
     if request.method == 'GET':
         con = generate_connection()
@@ -283,6 +293,7 @@ def reservation():
         redirect('/directory')
 
 @app.route("/layout", methods=['GET'])
+@login_required
 def layout():
     if request.method == 'GET':
         con = generate_connection()
@@ -341,7 +352,7 @@ class fine():
         self.user_id=str(user_id)
         self.checkout_id=checkout_id
         self.amount=amount
-        self.status='Due'
+        self.status='unpaid'
         self.issued_at=datetime.now()
 
 def generate_fine(fine_id, user_id, checkout_id, amount):
