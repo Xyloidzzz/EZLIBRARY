@@ -48,6 +48,20 @@
                 </h1>
         {% endif %}
         {% if current_user.role == 'staff' %}
+        <div class="content">
+            <form name='Fine ID' method='post' action="{{ url_for("add")}}">
+                <label for="user_id"><b>User ID</b></label>
+                <input type="text" placeholder="Enter User ID" name="user_id" required>
+            
+                <label for="checkout_id"><b>Checkout ID</b></label>
+                <input type="checkout_id" placeholder="Checkout ID" name="checkout_id" required>
+
+                <label for="amount"><b>Amount</b></label>
+                <input type="amount" placeholder="Amount" name="amount" required>
+            
+                <button type="submit">submit/button>
+            </form>
+        </div>
         <table>
             <thead>
                 <tr>

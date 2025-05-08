@@ -201,7 +201,7 @@ def checkout():
                     return render_template('/Checkout.html', error="nothing there...")
                 return render_template('/Checkout.html', data=data, user=current_user)
 
-@app.route("/fines", methods=['GET'])
+@app.route("/fines", methods=['GET', 'POST'])
 def fines():
     if request.method == 'GET':
         con = generate_connection()
@@ -213,6 +213,12 @@ def fines():
                 if data is None:
                     return render_template('/Fines.html', error="nothing there...")
                 return render_template('/Fines.html', data=data, user=current_user)
+            
+@app.route("/fines/add", methods=['POST'])
+def add_fine():
+    user_id=request.form.get('user_id')
+    checkout_id=request.form.get('checkout_id')
+    amount = request.form.get('amount')
 
 class user():
     def __init__(self,email,role,user_id,name):
@@ -220,7 +226,6 @@ class user():
         self.id=str(user_id)
         self.role=role
         self.name=name
-
 
     def is_active(self):
         return True
@@ -237,6 +242,7 @@ class user():
 def generate_user(email,role,user_id,name):
     return user(email,role,user_id,name)
 
+
 def generate_connection():
     connection=pymysql.connect(host="bookworms.c9e4q2aoy2op.us-east-2.rds.amazonaws.com",
                              user='admin',
@@ -248,3 +254,15 @@ def generate_connection():
 def check_email(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     return re.fullmatch(regex,email)
+
+class fine():
+    def __init__(self, fine_id, user_id, checkout_id, amount):
+        self.fine_id=fine_id
+        self.user_id=str(user_id)
+        self.checkout_id=checkout_id
+        self.amount=amount
+        self.status='Due'
+        self.issued_at=datetime.now()
+
+    def generate_fine(user_id, checkout_id, amount):
+        return fine(user_id, checkout_id, amount)
