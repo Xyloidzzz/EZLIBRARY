@@ -33,6 +33,9 @@ def load_user(user_id):
 @app.route("/")
 @app.route("/home")
 def home():
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        redirect('/logout')
     return render_template('/Home.html')
 
 @app.route("/about")
@@ -216,7 +219,7 @@ def addfine():
         con = generate_connection()
         with con:
             with con.cursor() as cursor:
-                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, "Due", %s)', (user_id, checkout_id, amount, date))
+                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, "unpaid", %s)', (user_id, checkout_id, amount, date))
                 con.commit()
                 fine_id=cursor.fetchone()
                 cursor.close()

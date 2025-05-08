@@ -10,30 +10,33 @@
 <body>
     <h1>BOOKWORMS LOGO</h1>
     <div class="nav-group">
-      {% if current_user.role=="staff" %}
+  {% if not current_user.is_authenticated %}
+      <a href="{{url_for("home")}}"><button>Home</button></a>
+      <a href="{{url_for("about")}}"><button>About</button></a>
+      <a href="{{url_for("login")}}"><button>Login</button></a>
+  {% elif current_user.role=="staff" %}
       <a href="{{url_for("home")}}"><button>Home</button></a>
       <a href="{{url_for("users")}}"><button>Users</button></a>
       <a href="{{url_for("staff")}}"><button>Staff</button></a>
       <a href="{{url_for("books")}}"><button>Books</button></a>
       <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-      <button>Reservations</button>
-      <button>Layout</button>
-      <button>Fines</button>
+      <a href="{{url_for("reservation")}}"><button>Reservations</button>
+      <a href="{{url_for("layout")}}"><button>Layout</button>
+      <a href="{{url_for("fines")}}"><button>Fines</button></a>
       <a href="{{url_for("about")}}"><button>About</button></a>
       <a href="{{url_for("logout")}}"><button>Logout</button></a>
-  {% endif %}
-  {% if current_user.role=="user" %}
+  {% elif current_user.role=="user" %}
       <a href="{{url_for("home")}}"><button>Home</button></a>
       <a href="{{url_for("books")}}"><button>Books</button></a>
       <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-      <button>Reservations</button>
-      <button>Layout</button>
+      <a href="{{url_for("reservation")}}"><button>Reservations</button>
+      <a href="{{url_for("layout")}}"><button>Layout</button>
       <a href="{{url_for("about")}}"><button>About</button></a>
       <a href="{{url_for("logout")}}"><button>Logout</button></a>
   {% endif %}
     </div> 
     <div class="content">
-        CONTENT1
+        Welcome to the Bookworms 
     </div>
 </body>
 
