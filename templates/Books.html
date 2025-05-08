@@ -35,10 +35,6 @@
         {% endif %}
     </div> 
     <div class="content">
-        <div class="content-buttons">
-            <button class="table-edit-button">Edit</button>
-            <button class="table-add-button">Add</button>
-        </div>
         <table>
             <thead>
                 <tr>
@@ -57,6 +53,13 @@
                     Hi {{ current_user.name }}!
                 {% endif %}
                 </h1>
+
+                {% if current_user.role == 'staff' %}
+                <div class="table-buttons">
+                    <button id="table-edit-button">Edit</button>
+                    <button id="table-add-button">Add</button>
+                </div>
+                {% endif %}
                 
                 {% for item in data %}
                 <tr id="{{item['book_id']}}">
