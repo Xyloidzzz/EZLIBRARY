@@ -165,12 +165,34 @@ def fines():
             with con.cursor() as cur:
                 cur.execute("SELECT * FROM fine")
                 data = cur.fetchall()
+                print(data)
                 cur.close()
                 if data is None:
-                    return render_template('Fine.html', error="nothing there...")
-                return render_template('/Fine.html', data=data, user=current_user)
+                    return render_template('Fines.html', error="nothing there...")
+                return render_template('/Fines.html', data=data, user=current_user)
     else:
         redirect('/directory')
+
+@app.route("/fines/add", methods=['POST'])
+def addfine():
+    if request.method=='POST':
+        user_id=request.form.get('user_id')
+        checkout_id=request.form.get('checkout_id')
+        amount=request.form.get('amount')
+        date=datetime.now()
+        date=date.strftime('%Y-%m-%d')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, "Due", %s)', (user_id, checkout_id, amount, date))
+                con.commit()
+                fine_id=cursor.fetchone()
+                cursor.close()
+                generate_fine(fine_id, user_id, checkout_id, amount)
+                return redirect('/fines')
+    else:
+        cursor.close()
+        redirect('/directory') 
 
 @app.route("/users", methods=['GET'])
 def users():
@@ -292,5 +314,5 @@ class fine():
         self.status='Due'
         self.issued_at=datetime.now()
 
-    def generate_fine(user_id, checkout_id, amount):
-        return fine(user_id, checkout_id, amount)
+def generate_fine(fine_id, user_id, checkout_id, amount):
+    return fine(fine_id, user_id, checkout_id, amount)

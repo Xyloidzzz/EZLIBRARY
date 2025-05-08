@@ -49,7 +49,7 @@
         {% endif %}
         {% if current_user.role == 'staff' %}
         <div class="content">
-            <form name='Fine ID' method='post' action="{{ url_for("add")}}">
+            <form name='Fine ID' method='post' action="{{ url_for("addfine")}}">
                 <label for="user_id"><b>User ID</b></label>
                 <input type="text" placeholder="Enter User ID" name="user_id" required>
             
@@ -82,7 +82,7 @@
                     <td>{{item['checkout_id']}}</td>
                     <td>{{item['amount']}}</td>
                     <td>{{item['status']}}</td>
-                    <td>{{item['issued_at']}}</td>
+                    <td>{{item['issued']}}</td>
                 </tr>
             {% endfor %}
             </tbody>
