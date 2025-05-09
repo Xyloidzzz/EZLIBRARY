@@ -10,16 +10,55 @@
 <body>
     <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
     <div class="nav-group">
-      <a href="{{url_for("home")}}"><button>Home</button></a>
-      <a href="{{url_for("books")}}"><button>Books</button></a>
-      <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-      <a href="{{url_for("reservation")}}"><button>Reservations</button>
-      <a href="{{url_for("layout")}}"><button>Layout</button>
-      <a href="{{url_for("about")}}"><button>About</button></a>
-      <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% if current_user.role=="staff" %}
+            <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("account")}}"><button>Account</button></a>
+            <a href="{{url_for("users")}}"><button>Users</button></a>
+            <a href="{{url_for("staff")}}"><button>Staff</button></a>
+            <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
+            <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+            <a href="{{url_for("reservation")}}"><button>Reservations</button>
+            <a href="{{url_for("layout")}}"><button>Layout</button>
+            <a href="{{url_for("fines")}}"><button>Fines</button></a>
+            <a href="{{url_for("about")}}"><button>About</button></a>
+            <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% endif %}
+        {% if current_user.role=="user" %}
+            <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("account")}}"><button>Account</button></a>
+            <a href="{{url_for("books")}}"><button>Books</button></a>
+            <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
+            <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
+            <a href="{{url_for("reservation")}}"><button>Reservations</button>
+            <a href="{{url_for("layout")}}"><button>Layout</button>
+            <a href="{{url_for("about")}}"><button>About</button></a>
+            <a href="{{url_for("logout")}}"><button>Logout</button></a>
+        {% endif %}
     </div> 
     <div class="content">
-        CONTENT1
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <h1> You may change any of the following information for your account here</h1>
+        <form name='registration' method='post' action="{{ url_for("editaccount")}}">
+            <label for="fname"><b>First Name</b></label>
+            <input type="text" placeholder="Enter First Name" name="fname" value={{fname}}>
+            <label for="lname"><b>Last Name</b></label>
+            <input type="text" placeholder="Enter Last Name" name="lname" value={{lname}}>
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" value={{email}}>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" value={{password}}>
+            
+            <button type="submit">Alter</button>
+        </form>
     </div>
 </body>
 

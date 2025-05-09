@@ -19,6 +19,7 @@
     <div class="nav-group">
     {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("account")}}"><button>Account</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>
             <a href="{{url_for("staff")}}"><button>Staff</button></a>
             <a href="{{url_for("books")}}"><button>Books</button></a>
@@ -32,6 +33,7 @@
         {% endif %}
         {% if current_user.role=="user" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
+            <a href="{{url_for("account")}}"><button>Account</button></a>
             <a href="{{url_for("books")}}"><button>Books</button></a>
             <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
             <a href="{{url_for("equipment")}}"><button>Equipment</button></a>

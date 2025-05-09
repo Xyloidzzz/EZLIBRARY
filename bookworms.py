@@ -101,7 +101,7 @@ def registration():
             connection=generate_connection()
             with connection:
                 with connection.cursor() as cursor:
-                    cursor.execute('''select email from users where email="%s"''' , (email))
+                    cursor.execute('''select email from users where email=%s''' , (email))
                     data=cursor.fetchone()
                     if data is None:
                         phash=scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
@@ -111,23 +111,78 @@ def registration():
                         date=date.strftime('%Y-%m-%d')
                         cursor.execute('''insert into users(email,pass_hash,first_name,last_name,role,created_at) values(%s,%s,%s,%s,"user",%s)''', (email,phash,fname,lname,date))
                         connection.commit()
-                        cursor.execute('''select user_id from users where email="%s"''',(email))
+                        cursor.execute('''select user_id from users where email=%s''',(email))
                         user_id=cursor.fetchone()
                         cursor.close()
                         login_user(generate_user(email,'user',user_id,fname))
-                        return render_template('/Account.html',data=(email,fname,lname))
+                        return redirect('/account')
                     else:
                         cursor.close()
-                        return render_template('/Register.html',error="Email already in use, please use another.")
+                        return redirect('/register')
         else:
-            render_template('/Register.html',error="Error found in password or email, please try again.")
+            return redirect('/register')
     else:
-        redirect('/register')
+        return redirect('/register')
         
 @app.route('/account')
 @login_required
 def account():
     return render_template('/Account.html');
+
+@app.route('/account/edit', methods=["POST"])
+@login_required
+def editaccount():
+    if request.method=='POST':
+        connection=generate_connection()
+        with connection:
+            with connection.cursor() as cursor:
+                email=request.form.get('email').lower()
+                psw=request.form.get('psw')
+                fname=request.form.get('fname')
+                lname=request.form.get('lname')
+                vals=[]
+                base_string="update users set "
+                if not email and not psw and not fname and not lname:
+                    cursor.close()
+                    flash("No changes done")
+                    return redirect('/account')
+                if email:
+                    if check_email(email):
+                        cursor.execute('''select email from users where email=%s''' , (email))
+                        data=cursor.fetchone()
+                        if data is None:
+                            base_string += "email=%s, "
+                            vals.append(email)
+                        else:
+                            flash("Email is already in use please try again")
+                            return redirect('/account')
+                    else:
+                        flash("Invalid email, please try again")
+                        return redirect('/account')
+                if psw:
+                    base_string += "pass_hash=%s, "
+                    psw = scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
+                    vals.append(psw)
+                if fname:
+                    base_string += "fname=%s, "
+                    vals.append(sanitize(fname))
+                if lname:
+                    base_string += "lname=%s, "
+                    vals.append(sanitize(lname))
+                base_string=base_string[:-2]+ " where user_id=%s"
+                vals.append(current_user.id)
+                cursor.execute(base_string,tuple(vals))
+                connection.commit()
+                cur_id=current_user.id
+                cur_role=current_user.role
+                logout_user()
+                cursor.close()
+                login_user(generate_user(email,cur_role,cur_id,fname))
+                flash("Successfully altered account")
+                return redirect('/account')
+    else:
+        return redirect('/account')
+    
 
 @app.route("/search")
 def search():
