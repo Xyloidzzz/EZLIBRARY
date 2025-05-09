@@ -35,57 +35,86 @@
         {% endif %}
     </div> 
     <div class="content">
+        {% if current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
+        {% endif %}
+
+        {% if current_user.role == 'staff' %}
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new book.</p>
+        <div id="add-form" class="staff-form">                
+            <form name='add-equipment-form' method='post' action="{{ url_for("addequip")}}">
+                <label for="Name"><b>Name</b></label>
+                <input type="text" placeholder="Enter Name" name="Name" required>
+            
+                <label for="Description"><b>Description</b></label>
+                <textarea placeholder="Enter Description" name="Description" rows=4 cols=30></textarea>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="available" default>Available</option>
+                    <option value="lost">Lost</option>
+                    <option value="replace">Replace</option>
+                </select>
+            
+                <button id="staff-form-button" type="submit">Add Equipment</button>
+            </form>
+        </div>
+        <div hidden id="edit-form" class="staff-form">
+            <form name='edit-equipment-form' method='post' action="{{ url_for("editequip")}}">
+
+                <input type="equipment_id" name="equipment_id" hidden>
+
+                <label for="Name"><b>Name</b></label>
+                <input type="text" placeholder="Enter Name" name="Name" required>
+            
+                <label for="Description"><b>Description</b></label>
+                <textarea placeholder="Enter Description" name="Description" rows=4 cols=30></textarea>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="available" default>Available</option>
+                    <option value="lost">Lost</option>
+                    <option value="replace">Replace</option>
+                </select>
+            
+                <button id="edit-form-button" type="submit">Edit Equipment</button>
+            </form>
+        </div>
+        {% endif %}
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Description</th>
                     <th>Status</th>
                     <th>Added</th>
-                    <th>Description</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-                <h1>
-                {% if current_user.is_authenticated %}
-                    Hi {{ current_user.name }}!
-                {% endif %}
-                </h1>
-
-                {% if current_user.role == 'staff' %}
-                <div class="staff-form">
-                    <form name='equipment-form' method='post' action="{{ url_for("addequip")}}">
-                        <label for="Name"><b>Name</b></label>
-                        <input type="text" placeholder="Enter Name" name="Name" required>
-                    
-                        <label for="Description"><b>Description</b></label>
-                        <textarea placeholder="Enter Description" name="Description" rows=4 cols=30></textarea>
-
-                        <label for="status"><b>Status</b></label>
-                        <select type="status" name="status">
-                            <option value="available" default>Available</option>
-                            <option value="lost">Lost</option>
-                            <option value="replace">Replace</option>
-                        </select>
-                    
-                        <button id="staff-form-button" type="submit">Add Equipment</button>
-                    </form>
-                </div>
-                {% endif %}
-                
                 {% for item in data %}
                     <td>{{item['equipment_id']}}</td>
                     <td>{{item['equipment_name']}}</td>
+                    <td>{{item['description']}}</td>
                     <td>{{item['status']}}</td>
                     <td>{{item['added']}}</td>
-                    <td>{{item['description']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <form id="remove-form" method="post" action="{{ url_for("removeequip")}}">
+                        <input type="equipment_id" name="equipment_id" value="{{item['equipment_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
-    <script src="{{ url_for('static', filename='scripts/table_form.js') }}"></script>
 </body>
 
 </html>

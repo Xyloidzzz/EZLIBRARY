@@ -402,7 +402,43 @@ def addequip():
     else:
         cur.close()
         return redirect('/directory') 
-        
+
+@app.route("/equipment/edit", methods=['POST'])
+@login_required
+def editequip():
+    if request.method=='POST':
+        eid=request.form.get('equipment_id')
+        name=request.form.get('Name')
+        description=request.form.get('Description')
+        status=request.form.get('status')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('UPDATE equipment SET equipment_name = %s, description = %s, status = %s WHERE equipment_id = %s', (sanitize(name),sanitize(description),status,eid))
+                con.commit()
+                cursor.close()
+                return redirect('/equipment')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+    
+    
+@app.route("/equipment/remove", methods=['POST'])
+@login_required
+def removeequip():
+    if request.method=='POST':
+        eid=request.form.get('equipment_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM equipment WHERE equipment_id = %s', (eid))
+                con.commit()
+                cursor.close()
+                return redirect('/equipment')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+
 @app.route("/reservation", methods=['GET'])
 @login_required
 def reservation():
