@@ -82,7 +82,10 @@
                     </form>
                 </div>
                 <div hidden id="edit-form" class="staff-form">
-                    <form name='edit-book-form' method='post' action="{{ url_for("addbook")}}">
+                    <form name='edit-book-form' method='post' action="{{ url_for("editbook")}}">
+
+                        <input type="book_id" name="book_id" hidden>
+
                         <label for="title"><b>Title</b></label>
                         <input type="text" placeholder="Enter Title" name="title" required>
                     

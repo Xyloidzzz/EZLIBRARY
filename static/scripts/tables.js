@@ -30,7 +30,6 @@ const populate_editForm = (row) => {
   var inputs = editForm.getElementsByTagName('input');
   var selects = editForm.getElementsByTagName('select');
   var cells = row.getElementsByTagName('td');
-  cells = Array.from(cells).slice(1); // we don't need id
   for (var i = 0; i < inputs.length; i++) {
     if (inputs[i].type === 'checkbox') {
       inputs[i].checked = cells[i].innerText === 'True' ? true : false;
@@ -39,7 +38,6 @@ const populate_editForm = (row) => {
       inputs[i].value = cells[i].innerText;
     }
   }
-  // update the select via the value of the option and compar to second to last cell
   for (var i = 0; i < selects.length; i++) {
     var options = selects[i].options;
     for (var j = 0; j < options.length; j++) {
