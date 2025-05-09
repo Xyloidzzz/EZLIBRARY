@@ -322,7 +322,6 @@ def editfine():
 def removefine():
     if request.method=='POST':
         fid=request.form.get('fine_id')
-        print(fid)
         con = generate_connection()
         with con:
             with con.cursor() as cursor:
@@ -378,9 +377,6 @@ def staff():
                 cur.close()
                 if data is None:
                     return render_template('Staff.html', error="nothing there...")
-                print(data)
-                print(current_user.id)
-                print(type(current_user.id))
                 return render_template('/Staff.html', data=data, user=current_user)
     else:
         return redirect('/directory')
@@ -423,6 +419,8 @@ def addstaff():
 def removestaff():
     if request.method=='POST':
         uid=request.form.get('user_id')
+        if uid==82 or uid=="82":
+            return redirect('/staff')
         con = generate_connection()
         with con:
             with con.cursor() as cursor:
@@ -669,7 +667,6 @@ def addlay():
 def editlay():
     if request.method=='POST':
         rid=request.form.get('room_id')
-        print(rid)
         name=request.form.get('Name')
         cap=request.form.get('Capacity')
         loc=request.form.get('location')
