@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 import pymysql.cursors
 from flask_login import LoginManager, login_user, UserMixin, login_required, current_user, logout_user
 import scrypt
@@ -346,22 +346,43 @@ def addres():
         user_id=request.form.get('user_id')
         room_id=request.form.get('room_id')
         start=datetime.strptime(request.form.get('start_time'),"%Y-%m-%dT%H:%M")
-        print(start)
         end=datetime.strptime(request.form.get('end_time'),"%Y-%m-%dT%H:%M")
         if start > datetime.now() and end > datetime.now() and end > start:
             con = generate_connection()
             with con:
                 with con.cursor() as cur:
+                    cur.execute('select * from users where user_id=%s',(user_id))
+                    data=cur.fetchone()
+                    if data is None:
+                        msg = "User with id: %s does not exist, please try again" % (str(user_id))
+                        flash(msg)
+                        return redirect('/reservation')
+                        
+                    cur.execute('select * from rooms where room_id=%s',(room_id))
+                    data=cur.fetchone()
+                    if data is None:
+                        msg = "Room with id: %s does not exist please try again" % (str(room_id))
+                        flash(msg)
+                        return redirect('/reservation')
+                        
+                    cur.execute('select * from reservation where room_id=%s',(room_id))
+                    data=cur.fetchall()
+                    for x in data:
+                        xstart=x['start_time']
+                        xend=x['end_time']
+                        if check_time(xstart,xend,start) or check_time(xstart,xend,end):
+                            msg="Reservation conflicts with another reservation, start:%s, end:%s" % (xstart,xend)
+                            flash(msg)
+                            return redirect('/reservation')
+                    
                     cur.execute('INSERT INTO reservation (user_id, room_id, start_time, end_time) VALUES (%s, %s, %s, %s)', (user_id, room_id, start, end))
                     con.commit()
-                    book_id=cur.fetchone()
                     cur.close()
                     return redirect('/reservation')
         else:
-            redirect('/reservation', error='Impossible request')
-    else:
-        cur.close()
-        return redirect('/directory') 
+            flash("Chosen start or end is before the present, please try again")
+            return redirect('/reservation')
+    return redirect('/directory') 
 
 @app.route("/layout", methods=['GET'])
 @login_required
@@ -462,3 +483,6 @@ def generate_book(book_id, title, author, isbn, location, status, added):
 
 def sanitize(text):
     return bleach.clean(text)
+    
+def check_time(xstart,xend,value):
+    return value > xstart and value < xend
