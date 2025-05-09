@@ -35,6 +35,69 @@
         {% endif %}
     </div> 
     <div class="content">
+        {% if current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
+        {% endif %}
+
+        {% if current_user.role == 'staff' %}
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new book.</p>
+        <div id="add-form" class="staff-form">
+            <form name='add-book-form' method='post' action="{{ url_for("addbook")}}">
+                <label for="title"><b>Title</b></label>
+                <input type="text" placeholder="Enter Title" name="title" required>
+            
+                <label for="author"><b>Author</b></label>
+                <input type="author" placeholder="Enter Author" name="author" required>
+
+                <label for="ISBN"><b>ISBN</b></label>
+                <input type="ISBN" placeholder="Enter ISBN" name="ISBN" required>
+
+                <label for="location"><b>Location</b></label>
+                <input type="location" placeholder="Enter Location" name="location" required>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="available" default>Available</option>
+                    <option value="checked out" default>Checked Out</option>
+                    <option value="lost">Lost</option>
+                    <option value="replace">Replace</option>
+                </select>
+            
+                <button id="add-form-button" type="submit">Add Book</button>
+            </form>
+        </div>
+        <div hidden id="edit-form" class="staff-form">
+            <form name='edit-book-form' method='post' action="{{ url_for("editbook")}}">
+
+                <input type="book_id" name="book_id" hidden>
+
+                <label for="title"><b>Title</b></label>
+                <input type="text" placeholder="Enter Title" name="title" required>
+            
+                <label for="author"><b>Author</b></label>
+                <input type="author" placeholder="Enter Author" name="author" required>
+
+                <label for="ISBN"><b>ISBN</b></label>
+                <input type="ISBN" placeholder="Enter ISBN" name="ISBN" required>
+
+                <label for="location"><b>Location</b></label>
+                <input type="location" placeholder="Enter Location" name="location" required>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="available" default>Available</option>
+                    <option value="checked out" default>Checked Out</option>
+                    <option value="lost">Lost</option>
+                    <option value="replace">Replace</option>
+                </select>
+            
+                <button id="edit-form-button" type="submit">Edit Book</button>
+            </form>
+        </div>
+        {% endif %}
+        
         <table>
             <thead>
                 <tr>
@@ -45,42 +108,12 @@
                     <th>Location</th>
                     <th>Status</th>
                     <th>Added</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-                <h1>
-                {% if current_user.is_authenticated %}
-                    Hi {{ current_user.name }}!
-                {% endif %}
-                </h1>
-
-                {% if current_user.role == 'staff' %}
-                <div class="staff-form">
-                    <form name='book-form' method='post' action="{{ url_for("addbook")}}">
-                        <label for="title"><b>Title</b></label>
-                        <input type="text" placeholder="Enter Title" name="title" required>
-                    
-                        <label for="author"><b>Author</b></label>
-                        <input type="author" placeholder="Enter Author" name="author" required>
-
-                        <label for="ISBN"><b>ISBN</b></label>
-                        <input type="ISBN" placeholder="Enter ISBN" name="ISBN" required>
-
-                        <label for="location"><b>Location</b></label>
-                        <input type="location" placeholder="Enter Location" name="location" required>
-
-                        <label for="status"><b>Status</b></label>
-                        <select type="status" name="status">
-                            <option value="available" default>Available</option>
-                            <option value="lost">Lost</option>
-                            <option value="replace">Replace</option>
-                        </select>
-                    
-                        <button id="staff-form-button" type="submit">Add Book</button>
-                    </form>
-                </div>
-                {% endif %}
-                
                 {% for item in data %}
                 <tr id="{{item['book_id']}}">
                     <td>{{item['book_id']}}</td>
@@ -90,13 +123,15 @@
                     <td>{{item['location']}}</td>
                     <td>{{item['status']}}</td>
                     <td>{{item['added']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <td><button class="delete-button" id="{{item['book_id']}}">Remove</button></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
-    <script src="{{ url_for('static', filename='scripts/table_form.js') }}"></script>
 </body>
 
 </html>

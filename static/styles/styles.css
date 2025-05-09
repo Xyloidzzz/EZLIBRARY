@@ -85,6 +85,11 @@ a:hover {
   transform: translateY(-2px);
 }
 
+.content button.delete-button {
+  background-color: #d9534f;
+  border: 1px solid #d9534f;
+}
+
 /* All the Table Styling for PRETTYNESS :) */
 .content table {
   border-collapse: collapse;
