@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% if current_user.role == 'user' %}
+    {% if current_user.role == 'user' %}
                 <title>
                     You shouldn't be here
                 </title>
     {% endif %}
     {% if current_user.role == 'staff' %}
-        <title>Staff</title>
+        <title>Fines</title>
     {% endif %}
   <link rel="stylesheet" href= "{{ url_for('static',filename='styles/styles.css') }}">
 </head>
@@ -17,15 +17,15 @@
 <body>
     <img src="{{ url_for('static',filename='images/logo.png')}}" class='logo'>
     <div class="nav-group">
-    {% if current_user.role=="staff" %}
+        {% if current_user.role=="staff" %}
             <a href="{{url_for("home")}}"><button>Home</button></a>
             <a href="{{url_for("users")}}"><button>Users</button></a>
             <a href="{{url_for("staff")}}"><button>Staff</button></a>
             <a href="{{url_for("books")}}"><button>Books</button></a>
             <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
             <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-            <a href="{{url_for("reservation")}}"><button>Reservations</button>
-            <a href="{{url_for("layout")}}"><button>Layout</button>
+            <a href="{{url_for("reservation")}}"><button>Reservations</button></a>
+            <a href="{{url_for("layout")}}"><button>Layout</button></a>
             <a href="{{url_for("fines")}}"><button>Fines</button></a>
             <a href="{{url_for("about")}}"><button>About</button></a>
             <a href="{{url_for("logout")}}"><button>Logout</button></a>
@@ -35,7 +35,7 @@
             <a href="{{url_for("books")}}"><button>Books</button></a>
             <a href="{{url_for("checkout")}}"><button>Checkout</button></a>
             <a href="{{url_for("equipment")}}"><button>Equipment</button></a>
-            <a href="{{url_for("reservation")}}"><button>Reservations</button>
+            <a href="{{url_for("reservation")}}"><button>Reservations</button></a>
             <a href="{{url_for("layout")}}"><button>Layout</button>
             <a href="{{url_for("about")}}"><button>About</button></a>
             <a href="{{url_for("logout")}}"><button>Logout</button></a>
@@ -43,13 +43,19 @@
     </div> 
     <div class="content">
         {% if current_user.role == 'user' %}
-                <h1>
-                    You shouldn't be here
-                </h1>
+        <h1>
+            You shouldn't be here
+        </h1>
+        {% else %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
         {% endif %}
+
         {% if current_user.role == 'staff' %}
-        <div class="staff-form">
-            <form name='Fine ID' method='post' action="{{ url_for("addfine")}}">
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new fine.</p>
+        <div id="add-form" class="staff-form">
+            <form name='add-fine-form' method='post' action="{{ url_for("addfine")}}">
                 <label for="user_id"><b>User ID</b></label>
                 <input type="text" placeholder="Enter User ID" name="user_id" required>
             
@@ -58,10 +64,40 @@
 
                 <label for="amount"><b>Amount</b></label>
                 <input type="amount" placeholder="Amount" name="amount" required>
-            
-                <button type="submit">submit/button>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="paid" default>Paid</option>
+                    <option value="unpaid" default>Unpaid</option>
+                </select>
+                    
+                <button id="add-form-button" type="submit">submit</button>
             </form>
         </div>
+        <div hidden id="edit-form" class="staff-form">
+            <form name='edit-fine-form' method='post' action="{{ url_for("editfine")}}">
+
+                <input type="fine_id" name="fine_id" hidden>
+
+                <label for="user_id"><b>User ID</b></label>
+                <input type="text" placeholder="Enter User ID" name="user_id" required>
+            
+                <label for="checkout_id"><b>Checkout ID</b></label>
+                <input type="checkout_id" placeholder="Checkout ID" name="checkout_id" required>
+
+                <label for="amount"><b>Amount</b></label>
+                <input type="amount" placeholder="Amount" name="amount" required>
+
+                <label for="status"><b>Status</b></label>
+                <select type="status" name="status">
+                    <option value="paid" default>Paid</option>
+                    <option value="unpaid" default>Unpaid</option>
+                </select>
+                
+                <button id="edit-form-button" type="submit">submit/button>
+            </form>
+        </div>
+        {% endif %}
         <table>
             <thead>
                 <tr>
@@ -71,6 +107,9 @@
                     <th>Amount</th>
                     <th>Status</th>
                     <th>Date Issued</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
             
@@ -83,11 +122,16 @@
                     <td>{{item['amount']}}</td>
                     <td>{{item['status']}}</td>
                     <td>{{item['issued']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <form id="remove-form" method="post" action="{{ url_for("removefine")}}">
+                        <input type="book_id" name="fine_id" value="{{item['fine_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
-        {% endif %}
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>

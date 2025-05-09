@@ -35,47 +35,78 @@
         {% endif %}
     </div> 
     <div class="content">
+        {% if current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
+        {% endif %}
+        
+        {% if current_user.role == 'staff' %}
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new room.</p>
+        <div id="add-form" class="staff-form">      
+            <form name='add-layout-form' method='post' action="{{ url_for("addlay")}}">
+                <label for="Name"><b>Name</b></label>
+                <input type="text" placeholder="Enter Name" name="Name" required>
+            
+                <label for="Capacity"><b>Capacity</b></label>
+                <input type="number" placeholder="Enter Capacity" name="Capacity" required>
+
+                <label for="location"><b>Location</b></label>
+                <input type="text" placeholder="Enter Location" name="location" required>
+            
+                <button id="add-form-button" type="submit">Add Room</button>
+            </form>
+        </div>
+        <div hidden id="edit-form" class="staff-form">
+            <form name='edit-layout-form' method='post' action="{{ url_for("editlay")}}">
+
+                <input type="room_id" name="room_id" hidden>
+                
+                <label for="Name"><b>Name</b></label>
+                <input type="text" placeholder="Enter Name" name="Name" required>
+            
+                <label for="Capacity"><b>Capacity</b></label>
+                <input type="number" placeholder="Enter Capacity" name="Capacity" required>
+
+                <label for="location"><b>Location</b></label>
+                <input type="text" placeholder="Enter Location" name="location" required>
+            
+                <button id="edit-form-button" type="submit">Edit Book</button>
+            </form>
+        </div>
+        {% endif %}
+
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Capacity</th>
                     <th>Location</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
-                <h1>
-                {% if current_user.is_authenticated %}
-                    Hi {{ current_user.name }}!
-                {% endif %}
-                </h1>
-
-                {% if current_user.role == 'staff' %}
-                <div class="staff-form">
-                    <form name='layout-form' method='post' action="{{ url_for("addlay")}}">
-                        <label for="Name"><b>Name</b></label>
-                        <input type="text" placeholder="Enter Name" name="Name" required>
-                    
-                        <label for="Capacity"><b>Capacity</b></label>
-                        <input type="number" placeholder="Enter Capacity" name="Capacity" required>
-  
-                        <label for="location"><b>Location</b></label>
-                        <input type="text" placeholder="Enter Location" name="location" required>
-                    
-                        <button id="staff-form-button" type="submit">Add Equipment</button>
-                    </form>
-                </div>
-                {% endif %}
-                
                 {% for item in data %}
-                <tr>
+                <tr id="{{item['room_id']}}">
+                    <td>{{item['room_id']}}</td>
                     <td>{{item['room_name']}}</td>
                     <td>{{item['capacity']}}</td>
                     <td>{{item['location']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <form id="remove-form" method="post" action="{{ url_for("removelay")}}">
+                        <input type="book_id" name="room_id" value="{{item['room_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
                 {% endfor %}
+            </tbody>
         </table>
     </div>
+    <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>
 
 </html>

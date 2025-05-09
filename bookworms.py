@@ -278,12 +278,13 @@ def addfine():
         user_id=request.form.get('user_id')
         checkout_id=request.form.get('checkout_id')
         amount=request.form.get('amount')
+        status=request.form.get('status')
         date=datetime.now()
         date=date.strftime('%Y-%m-%d')
         con = generate_connection()
         with con:
             with con.cursor() as cursor:
-                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, "unpaid", %s)', (user_id, checkout_id, amount, date))
+                cursor.execute('INSERT INTO fine (user_id, checkout_id, amount, status, issued) VALUES (%s, %s, %s, %s, %s)', (user_id, checkout_id, amount, status, date))
                 con.commit()
                 fine_id=cursor.fetchone()
                 cursor.close()
@@ -293,6 +294,46 @@ def addfine():
         cursor.close()
         return redirect('/directory') 
 
+@app.route("/fines/edit", methods=['POST'])
+@login_required
+def editfine():
+    if request.method=='POST':
+        fid=request.form.get('fine_id')
+        user_id=request.form.get('user_id')
+        checkout_id=request.form.get('checkout_id')
+        amount=request.form.get('amount')
+        status=request.form.get('status')
+        date=datetime.now()
+        date=date.strftime('%Y-%m-%d')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('UPDATE fine SET user_id = %s, checkout_id = %s, amount = %s, status=%s, issued=%s WHERE fine_id = %s', (user_id,checkout_id,amount,sanitize(status),date,fid))
+                con.commit()
+                cursor.close()
+                return redirect('/fines')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+    
+    
+@app.route("/fines/remove", methods=['POST'])
+@login_required
+def removefine():
+    if request.method=='POST':
+        fid=request.form.get('fine_id')
+        print(fid)
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM fine WHERE fine_id = %s', (fid))
+                con.commit()
+                cursor.close()
+                return redirect('/fines')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+        
 @app.route("/users", methods=['GET'])
 @login_required
 def users():
@@ -456,7 +497,44 @@ def addlay():
     else:
         cur.close()
         return redirect('/directory') 
-
+        
+@app.route("/layout/edit", methods=['POST'])
+@login_required
+def editlay():
+    if request.method=='POST':
+        rid=request.form.get('room_id')
+        print(rid)
+        name=request.form.get('Name')
+        cap=request.form.get('Capacity')
+        loc=request.form.get('location')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('UPDATE rooms SET room_name = %s, capacity = %s, location = %s WHERE room_id = %s', (sanitize(name),cap,sanitize(loc),rid))
+                con.commit()
+                cursor.close()
+                return redirect('/layout')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+    
+    
+@app.route("/layout/remove", methods=['POST'])
+@login_required
+def removelay():
+    if request.method=='POST':
+        room_id=request.form.get('room_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM rooms WHERE room_id = %s', (room_id))
+                con.commit()
+                cursor.close()
+                return redirect('/layout')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+        
 class user():
     def __init__(self,email,role,user_id,name):
         self.email=email
