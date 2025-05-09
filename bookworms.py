@@ -464,6 +464,68 @@ def addres():
             return redirect('/reservation')
     return redirect('/directory') 
 
+@app.route("/reservation/edit", methods=['POST'])
+@login_required
+def editres():
+    if request.method=='POST':
+        rid=request.form.get('reservation_id')
+        user_id=request.form.get('user_id')
+        room_id=request.form.get('room_id')
+        start=datetime.strptime(request.form.get('start_time'),"%Y-%m-%dT%H:%M")
+        end=datetime.strptime(request.form.get('end_time'),"%Y-%m-%dT%H:%M")
+        con = generate_connection()
+        if start > datetime.now() and end > datetime.now() and end > start:
+            with con:
+                with con.cursor() as cur:
+                    cur.execute('select * from users where user_id=%s',(user_id))
+                    data=cur.fetchone()
+                    if data is None:
+                        msg = "User with id: %s does not exist, please try again" % (str(user_id))
+                        flash(msg)
+                        return redirect('/reservation')
+                        
+                    cur.execute('select * from rooms where room_id=%s',(room_id))
+                    data=cur.fetchone()
+                    if data is None:
+                        msg = "Room with id: %s does not exist please try again" % (str(room_id))
+                        flash(msg)
+                        return redirect('/reservation')
+                        
+                    cur.execute('select * from reservation where room_id=%s and reservation_id!=%s',(room_id,rid))
+                    data=cur.fetchall()
+                    for x in data:
+                        xstart=x['start_time']
+                        xend=x['end_time']
+                        if check_time(xstart,xend,start) or check_time(xstart,xend,end):
+                            msg="Reservation conflicts with another reservation, start:%s, end:%s" % (xstart,xend)
+                            flash(msg)
+                            return redirect('/reservation')
+                    
+                    cur.execute('UPDATE reservation SET user_id = %s, room_id = %s, start_time=%s, end_time=%s WHERE reservation_id = %s', (user_id,room_id,start,end,rid))
+                con.commit()
+                cur.close()
+                return redirect('/reservation')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+    
+    
+@app.route("/reservation/remove", methods=['POST'])
+@login_required
+def removeres():
+    if request.method=='POST':
+        rid=request.form.get('reservation_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM reservation WHERE reservation_id = %s', (rid))
+                con.commit()
+                cursor.close()
+                return redirect('/reservation')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+
 @app.route("/layout", methods=['GET'])
 @login_required
 def layout():

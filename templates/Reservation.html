@@ -44,48 +44,81 @@
             </ul>
           {% endif %}
         {% endwith %}
+        {% if current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
+        {% endif %}
+
+        {% if current_user.role == 'staff' %}
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new book.</p>
+        
+        <div id="add-form" class="staff-form">
+            <form name='add-reservation-form' method='post' action="{{ url_for("addres")}}">
+                <label for="user_id"><b>User ID</b></label>
+                <input type="number" placeholder="Enter User ID" name="user_id" required>
+            
+                <label for="room_id"><b>Room ID</b></label>
+                <input type='number' placeholder="Enter Room ID" name="room_id">
+                
+                <label for="start_time"><b>Start Time</b></label>
+                <input type="datetime-local" name="start_time">
+
+                <label for="end_time"><b>End Time</b></label>
+                <input type="datetime-local" name="end_time">
+    
+                <button id="staff-form-button" type="submit">Add Reservation</button>
+            </form>
+        </div>
+        <div hidden id="edit-form" class="staff-form">
+            <form name='edit-reservation-form' method='post' action="{{ url_for("editres")}}">
+
+                <input type="reservation_id" name="reservation_id" hidden>
+                
+                <label for="user_id"><b>User ID</b></label>
+                <input type="number" placeholder="Enter User ID" name="user_id" required>
+            
+                <label for="room_id"><b>Room ID</b></label>
+                <input type='number' placeholder="Enter Room ID" name="room_id">
+                
+                <label for="start_time"><b>Start Time</b></label>
+                <input type="datetime-local" name="start_time">
+
+                <label for="end_time"><b>End Time</b></label>
+                <input type="datetime-local" name="end_time">
+
+                <button id="edit-form-button" type="submit">Edit Reservation</button>
+            </form>
+        </div>
+        {% endif %}
+        
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>User</th>
                     <th>Room</th>
                     <th>Start</th>
                     <th>End</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
-
             <tbody>
-                <h1>
-                {% if current_user.is_authenticated %}
-                    Hi {{ current_user.name }}!
-                {% endif %}
-                </h1>
-
-                {% if current_user.role == 'staff' %}
-                <div class="staff-form">
-                    <form name='reservation-form' method='post' action="{{ url_for("addres")}}">
-                        <label for="user_id"><b>User ID</b></label>
-                        <input type="number" placeholder="Enter User ID" name="user_id" required>
-                    
-                        <label for="room_id"><b>Room ID</b></label>
-                        <input type='number' placeholder="Enter Room ID" name="room_id">
-                        
-                        <label for="start_time"><b>Start Time</b></label>
-                        <input type="datetime-local" name="start_time">
-
-                        <label for="end_time"><b>End Time</b></label>
-                        <input type="datetime-local" name="end_time">
-            
-                        <button id="staff-form-button" type="submit">Add Reservation</button>
-                    </form>
-                </div>
-                {% endif %}
                 {% for item in data %}
                 <tr id="{{item['reservation_id']}}">
+                    <td>{{item['reservation_id']}}</td>
                     <td>{{item['user_id']}}</td>
                     <td>{{item['room_id']}}</td>
                     <td>{{item['start_time']}}</td>
                     <td>{{item['end_time']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <form id="remove-form" method="post" action="{{ url_for("removeres")}}">
+                        <input type="reservation_id" name="reservation_id" value="{{item['reservation_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
