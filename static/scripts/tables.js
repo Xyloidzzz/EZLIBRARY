@@ -9,6 +9,7 @@ for (var i = 0; i < trs.length; i++) {
         event.currentTarget.classList.add('active-row');
         addForm.setAttribute('hidden', 'true');
         editForm.removeAttribute('hidden');
+        populate_editForm(event.currentTarget);
       }
       else {
         event.currentTarget.classList.remove('active-row')
@@ -22,5 +23,29 @@ const removeAll = (className) => {
   var elements = document.getElementsByClassName(className);
   for (var i = 0; i < elements.length; i++) {
     elements[i].classList.remove(className)
+  }
+}
+
+const populate_editForm = (row) => {
+  var inputs = editForm.getElementsByTagName('input');
+  var selects = editForm.getElementsByTagName('select');
+  var cells = row.getElementsByTagName('td');
+  cells = Array.from(cells).slice(1); // we don't need id
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].type === 'checkbox') {
+      inputs[i].checked = cells[i].innerText === 'True' ? true : false;
+    } else {
+      
+      inputs[i].value = cells[i].innerText;
+    }
+  }
+  // update the select via the value of the option and compar to second to last cell
+  for (var i = 0; i < selects.length; i++) {
+    var options = selects[i].options;
+    for (var j = 0; j < options.length; j++) {
+      if (options[j].value === cells[cells.length - 2].innerText) {
+        options[j].selected = true;
+      }
+    }
   }
 }
