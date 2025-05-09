@@ -2,3 +2,4 @@ flask
 pymysql
 scrypt
 flask_login
+bleach
