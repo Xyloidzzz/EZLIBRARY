@@ -44,7 +44,7 @@
         {% if current_user.role == 'staff' %}
         <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new book.</p>
         <div id="add-form" class="staff-form">
-            <form name='add-book-form' method='post' action="{{ url_for("addbook")}}">
+            <form name='add-book-form' method='post' action="{{ url_for("addBook")}}">
                 <label for="title"><b>Title</b></label>
                 <input type="text" placeholder="Enter Title" name="title" required>
             
@@ -69,7 +69,7 @@
             </form>
         </div>
         <div hidden id="edit-form" class="staff-form">
-            <form name='edit-book-form' method='post' action="{{ url_for("editbook")}}">
+            <form name='edit-book-form' method='post' action="{{ url_for("editBook")}}">
 
                 <input type="book_id" name="book_id" hidden>
 
@@ -97,7 +97,7 @@
             </form>
         </div>
         {% endif %}
-        
+
         <table>
             <thead>
                 <tr>
@@ -124,7 +124,10 @@
                     <td>{{item['status']}}</td>
                     <td>{{item['added']}}</td>
                     {% if current_user.role == 'staff' %}
-                    <td><button class="delete-button" id="{{item['book_id']}}">Remove</button></td>
+                    <form id="remove-form" method="post" action="{{ url_for("removeBook")}}">
+                        <input type="book_id" name="book_id" value="{{item['book_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
                     {% endif %}
                 </tr>
                 {% endfor %}

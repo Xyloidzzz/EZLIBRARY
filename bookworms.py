@@ -150,7 +150,7 @@ def books():
         redirect('/directory')
         
 @app.route("/books/add", methods=['POST'])
-def addbook():
+def addBook():
     if request.method=='POST':
         title=request.form.get('title')
         author=request.form.get('author')
@@ -175,7 +175,7 @@ def addbook():
     
 @app.route("/books/edit", methods=['POST'])
 @login_required
-def editbook():
+def editBook():
     if request.method=='POST':
         book_id=request.form.get('book_id')
         title=request.form.get('title')
@@ -187,6 +187,23 @@ def editbook():
         with con:
             with con.cursor() as cursor:
                 cursor.execute('UPDATE books SET title = %s, author = %s, isbn = %s, location = %s, status = %s WHERE book_id = %s', (title, author, isbn, location, status, book_id))
+                con.commit()
+                cursor.close()
+                return redirect('/books')
+    else:
+        cursor.close()
+        return redirect('/directory') 
+    
+    
+@app.route("/books/remove", methods=['POST'])
+@login_required
+def removeBook():
+    if request.method=='POST':
+        book_id=request.form.get('book_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM books WHERE book_id = %s', (book_id))
                 con.commit()
                 cursor.close()
                 return redirect('/books')
