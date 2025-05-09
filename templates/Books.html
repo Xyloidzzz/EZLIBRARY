@@ -55,8 +55,8 @@
                 </h1>
 
                 {% if current_user.role == 'staff' %}
-                <div class="staff-form">
-                    <form name='book-form' method='post' action="{{ url_for("addbook")}}">
+                <div id="add-form" class="staff-form">
+                    <form name='add-book-form' method='post' action="{{ url_for("addbook")}}">
                         <label for="title"><b>Title</b></label>
                         <input type="text" placeholder="Enter Title" name="title" required>
                     
@@ -76,7 +76,32 @@
                             <option value="replace">Replace</option>
                         </select>
                     
-                        <button id="staff-form-button" type="submit">Add Book</button>
+                        <button id="add-form-button" type="submit">Add Book</button>
+                    </form>
+                </div>
+                <div hidden id="edit-form" class="staff-form">
+                    <form name='edit-book-form' method='post' action="{{ url_for("addbook")}}">
+                        <label for="title"><b>Title</b></label>
+                        <input type="text" placeholder="Enter Title" name="title" required>
+                    
+                        <label for="author"><b>Author</b></label>
+                        <input type="author" placeholder="Enter Author" name="author" required>
+
+                        <label for="ISBN"><b>ISBN</b></label>
+                        <input type="ISBN" placeholder="Enter ISBN" name="ISBN" required>
+
+                        <label for="location"><b>Location</b></label>
+                        <input type="location" placeholder="Enter Location" name="location" required>
+
+                        <label for="status"><b>Status</b></label>
+                        <select type="status" name="status">
+                            <option value="available" default>Available</option>
+                            <option value="checked out" default>Checked Out</option>
+                            <option value="lost">Lost</option>
+                            <option value="replace">Replace</option>
+                        </select>
+                    
+                        <button id="edit-form-button" type="submit">Edit Book</button>
                     </form>
                 </div>
                 {% endif %}
