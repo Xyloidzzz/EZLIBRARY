@@ -44,7 +44,33 @@
                     <th>End</th>
                 </tr>
             </thead>
+
             <tbody>
+                <h1>
+                {% if current_user.is_authenticated %}
+                    Hi {{ current_user.name }}!
+                {% endif %}
+                </h1>
+
+                {% if current_user.role == 'staff' %}
+                <div class="staff-form">
+                    <form name='reservation-form' method='post' action="{{ url_for("addres")}}">
+                        <label for="user_id"><b>User ID</b></label>
+                        <input type="number" placeholder="Enter User ID" name="user_id" required>
+                    
+                        <label for="room_id"><b>Room ID</b></label>
+                        <input type='number' placeholder="Enter Room ID" name="room_id">
+                        
+                        <label for="start_time"><b>Start Time</b></label>
+                        <input type="datetime-local" name="start_time">
+
+                        <label for="end_time"><b>End Time</b></label>
+                        <input type="datetime-local" name="end_time">
+            
+                        <button id="staff-form-button" type="submit">Add Reservation</button>
+                    </form>
+                </div>
+                {% endif %}
                 {% for item in data %}
                 <tr id="{{item['reservation_id']}}">
                     <td>{{item['user_id']}}</td>

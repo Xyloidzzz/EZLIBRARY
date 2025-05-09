@@ -44,6 +44,29 @@
                 </tr>
             </thead>
             <tbody>
+                <h1>
+                {% if current_user.is_authenticated %}
+                    Hi {{ current_user.name }}!
+                {% endif %}
+                </h1>
+
+                {% if current_user.role == 'staff' %}
+                <div class="staff-form">
+                    <form name='layout-form' method='post' action="{{ url_for("addlay")}}">
+                        <label for="Name"><b>Name</b></label>
+                        <input type="text" placeholder="Enter Name" name="Name" required>
+                    
+                        <label for="Capacity"><b>Capacity</b></label>
+                        <input type="number" placeholder="Enter Capacity" name="Capacity" required>
+  
+                        <label for="location"><b>Location</b></label>
+                        <input type="text" placeholder="Enter Location" name="location" required>
+                    
+                        <button id="staff-form-button" type="submit">Add Equipment</button>
+                    </form>
+                </div>
+                {% endif %}
+                
                 {% for item in data %}
                 <tr>
                     <td>{{item['room_name']}}</td>
@@ -51,7 +74,6 @@
                     <td>{{item['location']}}</td>
                 </tr>
                 {% endfor %}
-            </tbody>
         </table>
     </div>
 </body>
