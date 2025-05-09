@@ -7,6 +7,7 @@ import base64
 import re
 import html
 from datetime import datetime
+import bleach
 
 manager=LoginManager()
 app = Flask(__name__)
@@ -301,7 +302,27 @@ def equipment():
     else:
         redirect('/directory')
 
-
+@app.route("/equipment/add", methods=['POST'])
+@login_required
+def addequip():
+    if request.method=='POST':
+        name=request.form.get('Name')
+        desc=request.form.get('Description')
+        status=request.form.get('status')
+        added=datetime.now()
+        added=added.strftime('%Y-%m-%d')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute('INSERT INTO equipment (equipment_name, description, status, added) VALUES (%s, %s, %s, %s)', (sanitize(name), sanitize(desc), status, added))
+                con.commit()
+                book_id=cur.fetchone()
+                cur.close()
+                return redirect('/equipment')
+    else:
+        cur.close()
+        return redirect('/directory') 
+        
 @app.route("/reservation", methods=['GET'])
 @login_required
 def reservation():
@@ -318,6 +339,30 @@ def reservation():
     else:
         redirect('/directory')
 
+@app.route("/reservation/add", methods=['POST'])
+@login_required
+def addres():
+    if request.method=='POST':
+        user_id=request.form.get('user_id')
+        room_id=request.form.get('room_id')
+        start=datetime.strptime(request.form.get('start_time'),"%Y-%m-%dT%H:%M")
+        print(start)
+        end=datetime.strptime(request.form.get('end_time'),"%Y-%m-%dT%H:%M")
+        if start > datetime.now() and end > datetime.now() and end > start:
+            con = generate_connection()
+            with con:
+                with con.cursor() as cur:
+                    cur.execute('INSERT INTO reservation (user_id, room_id, start_time, end_time) VALUES (%s, %s, %s, %s)', (user_id, room_id, start, end))
+                    con.commit()
+                    book_id=cur.fetchone()
+                    cur.close()
+                    return redirect('/reservation')
+        else:
+            redirect('/reservation', error='Impossible request')
+    else:
+        cur.close()
+        return redirect('/directory') 
+
 @app.route("/layout", methods=['GET'])
 @login_required
 def layout():
@@ -333,6 +378,24 @@ def layout():
                 return render_template('/Layout.html', data=data)
     else:
         redirect('/directory')
+
+@app.route("/layout/add", methods=['POST'])
+@login_required
+def addlay():
+    if request.method=='POST':
+        name=request.form.get('Name')
+        cap=request.form.get('Capacity')
+        loc=request.form.get('location')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cur:
+                cur.execute('INSERT INTO rooms (room_name, capacity, location) VALUES (%s, %s, %s)', (sanitize(name), cap, sanitize(loc)))
+                con.commit()
+                cur.close()
+                return redirect('/layout')
+    else:
+        cur.close()
+        return redirect('/directory') 
 
 class user():
     def __init__(self,email,role,user_id,name):
@@ -396,3 +459,6 @@ def generate_fine(fine_id, user_id, checkout_id, amount):
 
 def generate_book(book_id, title, author, isbn, location, status, added):
     return book(book_id, title, author, isbn, location, status, added)
+
+def sanitize(text):
+    return bleach.clean(text)

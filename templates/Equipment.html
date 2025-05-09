@@ -46,8 +46,34 @@
                 </tr>
             </thead>
             <tbody>
+                <h1>
+                {% if current_user.is_authenticated %}
+                    Hi {{ current_user.name }}!
+                {% endif %}
+                </h1>
+
+                {% if current_user.role == 'staff' %}
+                <div class="staff-form">
+                    <form name='equipment-form' method='post' action="{{ url_for("addequip")}}">
+                        <label for="Name"><b>Name</b></label>
+                        <input type="text" placeholder="Enter Name" name="Name" required>
+                    
+                        <label for="Description"><b>Description</b></label>
+                        <textarea placeholder="Enter Description" name="Description" rows=4 cols=30></textarea>
+
+                        <label for="status"><b>Status</b></label>
+                        <select type="status" name="status">
+                            <option value="available" default>Available</option>
+                            <option value="lost">Lost</option>
+                            <option value="replace">Replace</option>
+                        </select>
+                    
+                        <button id="staff-form-button" type="submit">Add Equipment</button>
+                    </form>
+                </div>
+                {% endif %}
+                
                 {% for item in data %}
-                <tr id="{{item['book_id']}}">
                     <td>{{item['equipment_id']}}</td>
                     <td>{{item['equipment_name']}}</td>
                     <td>{{item['status']}}</td>
@@ -59,6 +85,7 @@
         </table>
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/table_form.js') }}"></script>
 </body>
 
 </html>
