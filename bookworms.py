@@ -114,7 +114,7 @@ def registration():
                         cursor.execute('''select user_id from users where email="%s"''',(email))
                         user_id=cursor.fetchone()
                         cursor.close()
-                        login_user(generate_user(email,'user',user_id))
+                        login_user(generate_user(email,'user',user_id,fname))
                         return render_template('/Account.html',data=(email,fname,lname))
                     else:
                         cursor.close()
@@ -349,6 +349,22 @@ def users():
                 return render_template('/Users.html', data=data, user=current_user)
     else:
         redirect('/directory')
+
+@app.route("/users/remove", methods=['POST'])
+@login_required
+def removeuser():
+    if request.method=='POST':
+        uid=request.form.get('user_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM users WHERE user_id = %s', (uid))
+                con.commit()
+                cursor.close()
+                return redirect('/users')
+    else:
+        cursor.close()
+        return redirect('/directory') 
 
 @app.route("/staff", methods=['GET'])
 @login_required

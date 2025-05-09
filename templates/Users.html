@@ -34,8 +34,12 @@
                 <h1>
                     You shouldn't be here
                 </h1>
+        {% elif current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
         {% endif %}
-        {% if current_user.role == 'staff' %}
+
         <table>
             <thead>
                 <tr>
@@ -45,6 +49,9 @@
                     <th>Last Name</th>
                     <th>Role</th>
                     <th>Added</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -56,11 +63,16 @@
                     <td>{{item['last_name']}}</td>
                     <td>{{item['role']}}</td>
                     <td>{{item['created_at']}}</td>
+                    {% if current_user.role == 'staff' %}
+                    <form id="remove-form" method="post" action="{{ url_for("removeuser")}}">
+                        <input type="user_id" name="user_id" value="{{item['user_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        {% endif %}
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>

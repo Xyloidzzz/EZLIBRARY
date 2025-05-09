@@ -35,7 +35,16 @@
         {% endif %}
     </div> 
     <div class="content">
-        <form name='Checkout' method='post' action="{{ url_for("checkoutBook")}}">
+        {% if current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
+        {% endif %}
+
+        {% if current_user.role == 'staff' %}
+        <p><b>Instructions: </b>Click on a row on the table to select that item. When selected you can <b>EDIT</b> that selection. Click again on the selected item to deselect and <b>ADD</b> a new transaction.</p>
+        <div id="add-form" class="staff-form">
+            <form name='Checkout' method='post' action="{{ url_for("checkoutBook")}}">
                 <label for="book_id"><b>Book ID</b></label>
                 <input type="text" placeholder="Enter Book ID" name="book_id" required>
                 <button> <type="submit"> Submit </button>
