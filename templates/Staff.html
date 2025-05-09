@@ -1,12 +1,12 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% if current_user.role == 'user' %}
-                <title>
-                    You shouldn't be here
-                </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if current_user.role == 'user' %}
+        <title>
+            You shouldn't be here
+        </title>
     {% endif %}
     {% if current_user.role == 'staff' %}
         <title>Staff</title>
@@ -46,8 +46,33 @@
                 <h1>
                     You shouldn't be here
                 </h1>
+        {% elif current_user.is_authenticated %}
+        <h1>
+            Hi {{ current_user.name }}!
+        </h1>
         {% endif %}
-        {% if current_user.role == 'staff' %}
+        {% if current_user.role == 'staff' and current_user.id=="82" %}
+        <div id="add-form" class="staff-form">
+            <form name='add-email-form' method='post' action="{{ url_for("addstaff")}}">
+                <label for="email"><b>Email</b></label>
+                <input type="text" placeholder="Enter Email" name="email" required>
+            
+                <label for="pass"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="pass" required>
+
+                <label for="rpass"><b>Confirm Password</b></label>
+                <input type="password" placeholder="Confirm Password" name="rpass" required>
+
+                <label for="fname"><b>First Name</b></label>
+                <input type="text" placeholder="Enter First Name" name="fname" required>
+
+                <label for="lname"><b>Last Name</b></label>
+                <input type="text" placeholder="Enter Last Name" name="lname" required>
+            
+                <button id="add-form-button" type="submit">Add Staff</button>
+            </form>
+        </div>
+        {% endif %}
         <table>
             <thead>
                 <tr>
@@ -57,9 +82,11 @@
                     <th>Last Name</th>
                     <th>Role</th>
                     <th>Added</th>
+                    {% if current_user.id == "82" %}
+                    <th>Admin</th>
+                    {% endif %}
                 </tr>
             </thead>
-            
             <tbody>
                 {% for item in data %}
                 <tr id="{{item['user_id']}}">
@@ -69,11 +96,16 @@
                     <td>{{item['last_name']}}</td>
                     <td>{{item['role']}}</td>
                     <td>{{item['created_at']}}</td>
+                    {% if current_user.id == "82" %}
+                    <form id="remove-form" method="post" action="{{ url_for("removestaff")}}">
+                        <input type="user_id" name="user_id" value="{{item['user_id']}}" hidden>
+                        <td><button class="delete-button" type="submit">Remove</button></td>
+                    </form>
+                    {% endif %}
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
-        {% endif %}
     </div>
     <script src="{{ url_for('static', filename='scripts/tables.js') }}"></script>
 </body>

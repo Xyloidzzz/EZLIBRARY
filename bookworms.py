@@ -378,9 +378,61 @@ def staff():
                 cur.close()
                 if data is None:
                     return render_template('Staff.html', error="nothing there...")
+                print(data)
+                print(current_user.id)
+                print(type(current_user.id))
                 return render_template('/Staff.html', data=data, user=current_user)
     else:
-        redirect('/directory')
+        return redirect('/directory')
+
+@app.route('/staff/add', methods=['POST'])
+@login_required
+def addstaff():
+    if request.method=='POST':
+        email=request.form.get('email').lower()
+        psw=request.form.get('pass')
+        repsw=request.form.get('rpass')
+        fname=request.form.get('fname')
+        lname=request.form.get('lname')
+        if psw==repsw and check_email(email):
+            connection=generate_connection()
+            with connection:
+                with connection.cursor() as cursor:
+                    cursor.execute('''select email from users where email="%s"''' , (email))
+                    data=cursor.fetchone()
+                    if data is None:
+                        phash=scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
+                        fname=sanitize(fname)
+                        lname=sanitize(lname)
+                        date=datetime.now()
+                        date=date.strftime('%Y-%m-%d')
+                        cursor.execute('''insert into users(email,pass_hash,first_name,last_name,role,created_at) values(%s,%s,%s,%s,"staff",%s)''', (email,phash,fname,lname,date))
+                        connection.commit()
+                        cursor.close()
+                        return redirect('/staff')
+                    else:
+                        cursor.close()
+                        return redirect('/staff')
+        else:
+            return redirect('/staff')
+    else:
+        return redirect('/staff')
+
+@app.route("/staff/remove", methods=['POST'])
+@login_required
+def removestaff():
+    if request.method=='POST':
+        uid=request.form.get('user_id')
+        con = generate_connection()
+        with con:
+            with con.cursor() as cursor:
+                cursor.execute('DELETE FROM users WHERE user_id = %s', (uid))
+                con.commit()
+                cursor.close()
+                return redirect('/staff')
+    else:
+        cursor.close()
+        return redirect('/directory') 
 
 @app.route("/equipment", methods=['GET'])
 @login_required
