@@ -114,7 +114,12 @@ def registration():
                         cursor.execute('''select user_id from users where email=%s''',(email))
                         user_id=cursor.fetchone()
                         cursor.close()
-                        login_user(generate_user(email,'user',user_id,fname))
+                        cur_user=generate_user(email,'user',user_id['user_id'],fname)
+                        login_user(cur_user)
+                        if current_user.role=='user':
+                            return redirect('/account')
+                        else:
+                            return redirect('/directory')
                         return redirect('/account')
                     else:
                         cursor.close()
