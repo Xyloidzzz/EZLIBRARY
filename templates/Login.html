@@ -15,6 +15,15 @@
       <a href="{{url_for("login")}}"><button>Login</button></a>
     </div> 
     <div class="content">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
         <form name='login' method='post' action="{{ url_for("auth")}}">
             <label for="email"><b>Email</b></label>
             <input type="text" placeholder="Enter Email" name="email" required>

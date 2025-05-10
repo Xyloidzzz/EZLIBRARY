@@ -17,6 +17,8 @@ app.config['MYSQL_DATABASE_USER'] = 'admin' # Specify Master username
 app.config['MYSQL_DATABASE_PASSWORD'] = 'hE079T=DaPa_' # Specify Master password
 app.config['MYSQL_DATABASE_DB'] = 'bookworms-flask' # Specify database name
 app.config['SECRET_KEY'] = os.urandom(64)                                                                                                                      
+
+
 @manager.user_loader
 def load_user(user_id):
     connection = generate_connection()
@@ -63,14 +65,15 @@ def auth():
                     data=cursor.fetchone()
                     cursor.close()
                     try:
-                        scrypt.decrypt(data['pass_hash'], psw, 10)
+                        scrypt.decrypt(data['pass_hash'], psw, 4)
                         cur_user=generate_user(data['email'],data['role'],data['user_id'], data['first_name'])
                         login_user(cur_user)
                         if data['role']=='user':
                             return redirect('/account')
                         else:
                             return redirect('/directory')
-                    except scrypt.error:
+                    except scrypt.error as a:
+                        flash(str(a))
                         return redirect('/login?state=error')
     return render_template('/Login.html', error=True)
 
@@ -104,7 +107,7 @@ def registration():
                     cursor.execute('''select email from users where email=%s''' , (email))
                     data=cursor.fetchone()
                     if data is None:
-                        phash=scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
+                        phash=scrypt.encrypt(base64.b64encode(os.urandom(4)).decode('utf-8')[:4],psw,1)
                         fname=html.escape(fname)
                         lname=html.escape(lname)
                         date=datetime.now()
@@ -166,7 +169,7 @@ def editaccount():
                         return redirect('/account')
                 if psw:
                     base_string += "pass_hash=%s, "
-                    psw = scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
+                    psw = scrypt.encrypt(base64.b64encode(os.urandom(4)).decode('utf-8')[:4],psw,1)
                     vals.append(psw)
                 if fname:
                     base_string += "fname=%s, "
@@ -457,7 +460,7 @@ def addstaff():
                     cursor.execute('''select email from users where email="%s"''' , (email))
                     data=cursor.fetchone()
                     if data is None:
-                        phash=scrypt.encrypt(base64.b64encode(os.urandom(32)).decode('utf-8')[:32],psw,5)
+                        phash=scrypt.encrypt(base64.b64encode(os.urandom(4)).decode('utf-8')[:4],psw,1)
                         fname=sanitize(fname)
                         lname=sanitize(lname)
                         date=datetime.now()
@@ -826,3 +829,7 @@ def sanitize(text):
     
 def check_time(xstart,xend,value):
     return value > xstart and value < xend
+
+if __name__ == "__main__":
+   app.run(host='0.0.0.0', port=5000)
+
